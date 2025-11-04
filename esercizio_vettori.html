@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Esercizio Numeri Random</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: #f7f7f7;
+        }
+        table {
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        td, th {
+            border: 1px solid #333;
+            padding: 6px 10px;
+        }
+        th {
+            background: #ddd;
+        }
+    </style>
+</head>
+<body>
+
+    <h2>Numeri Casuali tra -100 e 100</h2>
+    <div id="tabellaNumeri"></div>
+
+    <h3>Risultati</h3>
+    <p id="media"></p>
+    <p id="max"></p>
+    <p id="min"></p>
+
+    <h3>Numeri Pari > 50</h3>
+    <div id="pari"></div>
+
+    <script>
+        //  Creazione dell'array di 100 numeri random tra -100 e 100
+        let numeri = [];
+        for (let i = 0; i < 100; i++) {
+            let n = Math.floor(Math.random() * 201) - 100; // da -100 a 100
+            numeri.push(n);
+        }
+
+        //  Calcolo media, massimo e minimo
+        let somma = numeri.reduce((a, b) => a + b, 0);
+        let media = somma / numeri.length;
+        let max = Math.max(...numeri);
+        let min = Math.min(...numeri);
+
+        //  Crea vettore dei numeri pari maggiori di 50
+        let pariMaggiori50 = numeri.filter(n => n % 2 === 0 && n > 50);
+
+        //  Mostra i risultati in una tabella (10x10)
+        let tabella = "<table><tr>";
+        numeri.forEach((n, i) => {
+            tabella += `<td>${n}</td>`;
+            if ((i + 1) % 10 === 0) tabella += "</tr><tr>";
+        });
+        tabella += "</tr></table>";
+        document.getElementById("tabellaNumeri").innerHTML = tabella;
+
+        //  Mostra risultati
+        document.getElementById("media").textContent = "Media: " + media.toFixed(2);
+        document.getElementById("max").textContent = "Massimo: " + max;
+        document.getElementById("min").textContent = "Minimo: " + min;
+
+        //  Mostra numeri pari > 50
+        document.getElementById("pari").textContent = pariMaggiori50.join(", ");
+    </script>
+
+</body>
+</html>
