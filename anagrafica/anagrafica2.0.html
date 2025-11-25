@@ -89,19 +89,16 @@
 
   <script>
     function stampaDati() {
-      // Array vuoto in cui inserire i dati
-      const dati = [];
+      const dati: {};
 
-      // Inserimento dei dati usando push
-      dati.push({label: "Nome", value: document.getElementById("nome").value.trim()});
-      dati.push({label: "Cognome", value: document.getElementById("cognome").value.trim()});
-      dati.push({label: "Indirizzo", value: document.getElementById("indirizzo").value.trim()});
-      dati.push({label: "Città", value: document.getElementById("citta").value.trim()});
-      dati.push({label: "CAP", value: document.getElementById("cap").value.trim()});
-      dati.push({label: "Anno di nascita", value: parseInt(document.getElementById("anno").value.trim())});
+     dati.nome = document.getElementById("Nome");
+    dati.cognome = document.getElementById("Cognome");
+    dati.indirizzo = document.getElementById("Indirizzo");
+    dati.città = document.getElementById("Città");
+    dati.CAP = document.getElementById("CAP");
+    dati.annodinascita = document.getElementById("Anno di nascita");
 
-      // Controllo campi minimi
-      if (!dati[0].value || !dati[1].value || isNaN(dati[5].value)) {
+      if (dati[0].value && dati[1].value && (dati[5].value)) {
         alert("Compila almeno Nome, Cognome e Anno di nascita!");
         return;
       }
@@ -135,13 +132,8 @@
           gen = "Anno non valido o troppo lontano nel tempo";
       }
 
-      // Calcolo età
-      const eta = new Date().getFullYear() - anno;
-
-      // Stampa dei risultati
       const outputDiv = document.getElementById("output");
       outputDiv.style.display = "block";
-      outputDiv.innerHTML = dati.map(d => `<div><strong>${d.label}:</strong> ${d.value}</div>`).join("") + `<div><strong>Età:</strong> ${eta} anni</div> <div><strong>Generazione:</strong> ${gen}</div>`;
     }
   </script>
 </body>
