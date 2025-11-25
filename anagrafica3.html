@@ -78,6 +78,43 @@
         <label for="anno">Anno di nascita:</label>
         <input type="number" id="anno" min="1900" max="2025">
 
+        <p>Sesso:</p>
+<input type="radio" name="sesso" value="M"> M<br>
+<input type="radio" name="sesso" value="F"> F<br>
+<input type="radio" name="sesso" value="Altro"> Altro<br><br>
+
+<p>Provincia:</p>
+<select id="provincia">
+  <option value="MI">Milano</option>
+  <option value="RM">Roma</option>
+  <option value="TO">Torino</option>
+  <option value="FI">Firenze</option>
+</select><br><br>
+
+<p>Mezzi di locomozione posseduti:</p>
+<input type="checkbox" name="mezzi" value="Auto"> Auto<br>
+<input type="checkbox" name="mezzi" value="Moto"> Moto<br>
+<input type="checkbox" name="mezzi" value="Bici"> Bici<br>
+<input type="checkbox" name="mezzi" value="Aereo"> Aereo<br>
+<input type="checkbox" name="mezzi" value="Yacht"> Yacht<br><br>
+
+<p>Materie di insegnamento preferite (max 3):</p>
+<select id="materie" multiple size="5">
+  <option value="Matematica">Matematica</option>
+  <option value="Italiano">Italiano</option>
+  <option value="Storia">Storia</option>
+  <option value="Geografia">Geografia</option>
+  <option value="Inglese">Inglese</option>
+  <option value="Informatica">Informatica</option>
+  <option value="Scienze">Scienze</option>
+  <option value="Arte">Arte</option>
+  <option value="Musica">Musica</option>
+</select><br><br>
+
+<button onclick="invio()">Invia</button>
+
+<p id="output"></p>
+
         <div class="actions">
           <button onclick="stampaDati()">Invia</button>
         </div>
@@ -86,55 +123,71 @@
 
     <div id="output"></div>
   </div>
+<script>
+function stampaDati() {
 
-  <script>
-    function stampaDati() {
-      
-      const dati = [];
+    const dati = {};
 
-      
-    dati.push({ label: "Nome", value: document.getElementById("Nome") });
-    dati.push({ label: "Cognome", value:document.getElementById("Cognome")  });
-    dati.push({ label: "Indirizzo", value: document.getElementById("Indirizzo") });
-    dati.push({ label: "Città", value:document.getElementById("Città") });
-    dati.push({ label: "CAP", value: document.getElementById("CAP") });
-    dati.push({ label: "Anno di nascita", value:document.getElementById("Anno di nascita") });
-      
-      if (!(dati[0] && dati[1] && dati[5])) {
+    dati.nome = document.getElementById("Nome").value;
+    dati.cognome = document.getElementById("Cognome").value;
+    dati.indirizzo = document.getElementById("Indirizzo").value;
+    dati.citta = document.getElementById("Città").value;
+    dati.CAP = document.getElementById("CAP").value;
+    dati.annodinascita = document.getElementById("Anno di nascita").value;
+    dati.sesso = document.getElementById("Sesso").value;
+    dati.provincia = document.getElementById("Provincia").value;
+    dati.mezzi = document.getElementById("Mezzi").value;
+    dati.materie = document.getElementById("Materie").value;
+
+    if (!(dati.nome && dati.cognome && dati.annodinascita)) {
         alert("Compila almeno Nome, Cognome e Anno di nascita!");
         return;
-      }
-
-      
-      const anno = dati[5].value;
-      let gen = "";
-      switch (true) {
-        case (anno >= 1901 && anno <= 1927):
-          gen = "Greatest Generation";
-          break;
-        case (anno >= 1928 && anno <= 1945):
-          gen = "Generazione Silenziosa";
-          break;
-        case (anno >= 1946 && anno <= 1964):
-          gen = "Baby Boomers";
-          break;
-        case (anno >= 1965 && anno <= 1980):
-          gen = "Generazione X";
-          break;
-        case (anno >= 1981 && anno <= 1996):
-          gen = "Millennials";
-          break;
-        case (anno >= 1997 && anno <= 2012):
-          gen = "Generazione Z";
-          break;
-        case (anno >= 2013):
-          gen = "Generazione Alpha";
-          break;
-        default:
-          gen = "Anno non valido o troppo lontano nel tempo";
-      }
-    console.log(dati);
     }
-  </script>
+
+   
+    const anno = parseInt(dati.annodinascita);
+    let gen = "";
+
+    switch (true) {
+        case (anno >= 1901 && anno <= 1927):
+            gen = "Greatest Generation";
+            break;
+        case (anno >= 1928 && anno <= 1945):
+            gen = "Generazione Silenziosa";
+            break;
+        case (anno >= 1946 && anno <= 1964):
+            gen = "Baby Boomers";
+            break;
+        case (anno >= 1965 && anno <= 1980):
+            gen = "Generazione X";
+            break;
+        case (anno >= 1981 && anno <= 1996):
+            gen = "Millennials";
+            break;
+        case (anno >= 1997 && anno <= 2012):
+            gen = "Generazione Z";
+            break;
+        case (anno >= 2013):
+            gen = "Generazione Alpha";
+            break;
+        default:
+            gen = "Anno non valido o troppo lontano nel tempo";
+    }
+
+    document.getElementById("risultato").innerHTML =
+        "<strong>Nome:</strong> " + dati.nome + "<br>" +
+        "<strong>Cognome:</strong> " + dati.cognome + "<br>" +
+        "<strong>Indirizzo:</strong> " + dati.indirizzo + "<br>" +
+        "<strong>Città:</strong> " + dati.citta + "<br>" +
+        "<strong>CAP:</strong> " + dati.CAP + "<br>" +
+        "<strong>Anno di nascita:</strong> " + dati.annodinascita + "<br>" +
+        "<strong>Sesso:</strong> " + dati.sesso + "<br>" +
+        "<strong>Provincia:</strong> " + dati.provincia + "<br>" +
+        "<strong>Mezzi:</strong> " + dati.mezzi + "<br>" +
+        "<strong>Materie:</strong> " + dati.materie + "<br><br>" +
+        "<strong>Generazione:</strong> " + gen;
+}
+</script>
+
 </body>
 </html>
