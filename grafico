@@ -1,0 +1,25 @@
+<html>
+<body>
+
+<canvas id="myCanvas" width="200" height="100" style="border:1px solid #d3d3d3;">
+</canvas>
+
+<script>
+var c = document.getElementById("myCanvas");
+var ctx1 = c.getContext("2d");
+
+ctx1.moveTo(100,0);
+ctx1.lineTo(130,90);
+ctx1.lineTo(53,35);
+ctx1.lineTo(147,35);
+ctx1.lineTo(70,90);
+ctx1.lineTo(100,0);
+ctx1.stroke();
+
+ctx1.beginPath();
+ctx1.arc(100,50,50,0,2*Math.PI);
+ctx1.stroke();
+</script>
+
+</body>
+</html>
