@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Sender</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h2>Sender</h2>
+
+<input type="text" id="p1" placeholder="Parametro 1">
+<input type="text" id="p2" placeholder="Parametro 2">
+<button onclick="invia()"><a href="receveir.html"></a>Invia</button>
+
+<script>
+function invia() {
+    var p1 = document.getElementById("p1").value;
+    var p2 = document.getElementById("p2").value;
+
+    location.href = "receveir.html?p1=" + p1 + "&p2=" + p2;
+}
+</script>
+
+</body>
+</html>

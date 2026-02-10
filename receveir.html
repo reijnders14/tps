@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Receiver</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<h2>Receiver</h2>
+
+<p id="out"></p>
+
+<script>
+var s = location.search;
+s = s.substring(1);
+
+var a = s.split("&");
+
+var p1 = a[0].split("=")[1];
+var p2 = a[1].split("=")[1];
+
+document.getElementById("out").innerHTML =
+    "Parametro 1: " + p1 + "<br>Parametro 2: " + p2;
+</script>
+
+
+</body>
+</html>
