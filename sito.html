@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GrooveHub - Showroom Digitale</title>
+    <style>
+        /* === VARIABILI CSS E RESET === */
+        :root {
+            --bg-color: #f8f9fa;
+            --text-color: #212529;
+            --primary-color: #3a86ff;
+            --primary-hover: #0050b3;
+            --card-bg: #ffffff;
+            --border-color: #dee2e6;
+            --space-sm: 0.5rem;
+            --space-md: 1rem;
+            --space-lg: 2rem;
+            --font-main: 'Segoe UI', system-ui, sans-serif;
+            --transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --primary-color: #ff006e;
+            --primary-hover: #c40055;
+            --card-bg: #1e1e1e;
+            --border-color: #333333;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            transition: background-color var(--transition), color var(--transition);
+        }
+
+        /* Accessibilità: Focus visibile */
+        *:focus-visible {
+            outline: 3px solid var(--primary-color);
+            outline-offset: 2px;
+        }
+
+        button, a { cursor: pointer; transition: var(--transition); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        /* === HEADER E NAVIGAZIONE (Mobile First) === */
+        header {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: var(--space-md);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .logo { font-size: 1.5rem; font-weight: bold; }
+
+        /* Hamburger Menu */
+        .hamburger {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            background: none;
+            border: none;
+            padding: var(--space-sm);
+        }
+        .hamburger span {
+            display: block;
+            width: 25px;
+            height: 3px;
+            background-color: var(--text-color);
+            transition: var(--transition);
+        }
+
+        nav ul {
+            list-style: none;
+            display: none; /* Nascosto su mobile di default */
+            flex-direction: column;
+            gap: var(--space-md);
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: var(--card-bg);
+            padding: var(--space-md);
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        nav ul.open { display: flex; }
+
+        nav button.nav-link {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.1rem;
+            width: 100%;
+            text-align: left;
+        }
+        nav button.nav-link:hover { color: var(--primary-color); }
+
+        /* === MAIN CONTENT E SEZIONI === */
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: var(--space-lg) var(--space-md);
+            min-height: 80vh;
+        }
+
+        .page-section { display: none; animation: fadeIn 0.4s ease; }
+        .page-section.active { display: block; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Hero Home */
+        .hero { text-align: center; padding: 4rem 1rem; }
+        .hero h1 { font-size: 2.5rem; margin-bottom: var(--space-md); }
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: bold;
+        }
+        .btn-primary:hover:not(:disabled) { background-color: var(--primary-hover); }
+
+        /* === CATALOGO: FILTRI E GRIGLIA === */
+        .controls {
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-md);
+            margin-bottom: var(--space-lg);
+            background: var(--card-bg);
+            padding: var(--space-md);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        .controls input, .controls select {
+            padding: 0.5rem;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            background: var(--bg-color);
+            color: var(--text-color);
+            width: 100%;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: var(--space-lg);
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            transition: transform var(--transition), box-shadow var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+
+        .card img { width: 100%; height: 250px; object-fit: cover; }
+        .card-body { padding: var(--space-md); display: flex; flex-direction: column; flex-grow: 1; }
+        .card-title { font-size: 1.2rem; margin-bottom: var(--space-sm); }
+        .card-price { font-weight: bold; font-size: 1.1rem; color: var(--primary-color); margin-bottom: var(--space-md); }
+        .card-actions { margin-top: auto; display: flex; gap: var(--space-sm); }
+        .card-actions button { flex: 1; }
+
+        .btn-secondary {
+            background-color: transparent;
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 0.8rem;
+            border-radius: 4px;
+        }
+        .btn-secondary:hover { background-color: var(--bg-color); }
+
+        .load-more-container { text-align: center; margin-top: var(--space-lg); }
+
+        /* === MODALE === */
+        dialog {
+            margin: auto;
+            border: none;
+            border-radius: 8px;
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+        }
+        dialog::backdrop { background: rgba(0, 0, 0, 0.6); backdrop-filter: blur(3px); }
+        .modal-content { padding: var(--space-lg); text-align: center; }
+        .modal-content img { max-width: 100%; height: auto; border-radius: 4px; margin-bottom: var(--space-md); }
+        .close-modal { position: absolute; top: 10px; right: 10px; background: none; border: none; font-size: 1.5rem; color: var(--text-color); }
+
+        /* === TOAST NOTIFICHE === */
+        #toast-container {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1000;
+        }
+        .toast {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 1rem;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+        }
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+        @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
+
+        /* === FOOTER === */
+        footer { text-align: center; padding: var(--space-lg); background-color: var(--card-bg); border-top: 1px solid var(--border-color); }
+
+        /* === MEDIA QUERIES (Breakpoints) === */
+        @media (min-width: 768px) {
+            .hamburger { display: none; }
+            nav ul {
+                display: flex;
+                flex-direction: row;
+                position: static;
+                background: none;
+                border: none;
+                padding: 0;
+            }
+            nav button.nav-link { width: auto; }
+            .controls { flex-direction: row; align-items: center; }
+            .controls > * { flex: 1; }
+            .grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (min-width: 1024px) {
+            .grid { grid-template-columns: repeat(3, 1fr); }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-container">
+            <div class="logo">GrooveHub</div>
+            <button class="hamburger" aria-label="Apri menu navigazione" aria-expanded="false" id="hamburger-btn">
+                <span></span><span></span><span></span>
+            </button>
+            <nav>
+                <ul id="nav-menu">
+                    <li><button class="nav-link" data-target="home">Home</button></li>
+                    <li><button class="nav-link" data-target="catalog">Catalogo</button></li>
+                    <li><button class="nav-link" data-target="cart">Carrello (<span id="cart-count">0</span>)</button></li>
+                    <li><button class="nav-link" id="theme-toggle" aria-label="Cambia Tema">🌓 Tema</button></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section id="home" class="page-section active">
+            <div class="hero">
+                <h1>Il Suono che Ami, in Formato Fisico.</h1>
+                <p>Scopri la nostra selezione esclusiva di Vinili e CD musicali rari e popolari.</p>
+                <br>
+                <button class="btn-primary nav-link" data-target="catalog">Esplora il Catalogo</button>
+            </div>
+        </section>
+
+        <section id="catalog" class="page-section">
+            <h2>Catalogo Prodotti</h2>
+            
+            <div class="controls">
+                <div class="input-group">
+                    <label for="search" class="visually-hidden" style="display:none;">Cerca</label>
+                    <input type="text" id="search" placeholder="Cerca per titolo o artista..." aria-label="Cerca prodotti">
+                </div>
+                <div class="input-group">
+                    <label for="filter" class="visually-hidden" style="display:none;">Categoria</label>
+                    <select id="filter" aria-label="Filtra per categoria">
+                        <option value="all">Tutti i formati</option>
+                        <option value="Vinile">Vinili</option>
+                        <option value="CD">CDs</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="sort" class="visually-hidden" style="display:none;">Ordina</label>
+                    <select id="sort" aria-label="Ordina prodotti">
+                        <option value="name-asc">Nome (A-Z)</option>
+                        <option value="price-asc">Prezzo (Crescente)</option>
+                        <option value="price-desc">Prezzo (Decrescente)</option>
+                    </select>
+                </div>
+                <button id="reset-filters" class="btn-secondary">Reset</button>
+            </div>
+
+            <div class="grid" id="product-grid" aria-live="polite">
+                </div>
+
+            <div class="load-more-container">
+                <button id="load-more" class="btn-primary">Carica altri</button>
+            </div>
+        </section>
+
+        <section id="cart" class="page-section">
+            <h2>Il tuo Carrello</h2>
+            <div id="cart-items" style="margin-top: var(--space-md);">
+                </div>
+            <h3 style="margin-top: var(--space-lg);">Totale: <span id="cart-total">€ 0.00</span></h3>
+            <button class="btn-primary" style="margin-top: var(--space-md);" onclick="alert('Checkout non implementato in questa demo!')">Procedi al Checkout</button>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 GrooveHub - Showroom Digitale. Tutti i diritti riservati.</p>
+    </footer>
+
+    <dialog id="product-modal" aria-labelledby="modal-title" aria-describedby="modal-desc">
+        <button class="close-modal" aria-label="Chiudi modale">&times;</button>
+        <div class="modal-content" id="modal-content">
+            </div>
+    </dialog>
+
+    <div id="toast-container" aria-live="polite"></div>
+
+    <script>
+        // === MOCK DATA PRODOTTI ===
+        const allProducts = [
+            { id: 1, title: "The Dark Side of the Moon", artist: "Pink Floyd", price: 35.90, category: "Vinile", img: "https://images.unsplash.com/photo-1535905557558-afc4877a26fc?auto=format&fit=crop&w=400&q=80" },
+            { id: 2, title: "Random Access Memories", artist: "Daft Punk", price: 28.50, category: "CD", img: "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?auto=format&fit=crop&w=400&q=80" },
+            { id: 3, title: "Abbey Road", artist: "The Beatles", price: 32.00, category: "Vinile", img: "https://images.unsplash.com/photo-1622353450917-f37fa9b1d9c1?auto=format&fit=crop&w=400&q=80" },
+            { id: 4, title: "Kind of Blue", artist: "Miles Davis", price: 25.00, category: "Vinile", img: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=400&q=80" },
+            { id: 5, title: "Nevermind", artist: "Nirvana", price: 18.90, category: "CD", img: "https://images.unsplash.com/photo-1525362081669-2b476bb628c3?auto=format&fit=crop&w=400&q=80" },
+            { id: 6, title: "Thriller", artist: "Michael Jackson", price: 29.99, category: "Vinile", img: "https://images.unsplash.com/photo-1588693891880-997818eecf9e?auto=format&fit=crop&w=400&q=80" },
+            { id: 7, title: "Rumours", artist: "Fleetwood Mac", price: 22.50, category: "CD", img: "https://images.unsplash.com/photo-1458560871784-56d23406c091?auto=format&fit=crop&w=400&q=80" },
+            { id: 8, title: "OK Computer", artist: "Radiohead", price: 34.00, category: "Vinile", img: "https://images.unsplash.com/photo-1619983081563-430f63602796?auto=format&fit=crop&w=400&q=80" }
+        ];
+
+        // === STATO APPLICAZIONE ===
+        let state = {
+            products: [...allProducts],
+            cart: JSON.parse(localStorage.getItem('groovehub_cart')) || [],
+            theme: localStorage.getItem('groovehub_theme') || 'light',
+            currentPage: 1,
+            itemsPerPage: 4,
+            filters: { search: '', category: 'all', sort: 'name-asc' }
+        };
+
+        // === INIZIALIZZAZIONE ===
+        document.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+            updateCartUI();
+            applyFiltersAndRender();
+        });
+
+        // === NAVIGAZIONE SPA & HAMBURGER ===
+        const hamburgerBtn = document.getElementById('hamburger-btn');
+        const navMenu = document.getElementById('nav-menu');
+        const navLinks = document.querySelectorAll('.nav-link[data-target]');
+        const sections = document.querySelectorAll('.page-section');
+
+        hamburgerBtn.addEventListener('click', () => {
+            const isExpanded = hamburgerBtn.getAttribute('aria-expanded') === 'true';
+            hamburgerBtn.setAttribute('aria-expanded', !isExpanded);
+            navMenu.classList.toggle('open');
+        });
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                const targetId = e.target.getAttribute('data-target');
+                sections.forEach(sec => sec.classList.remove('active'));
+                document.getElementById(targetId).classList.add('active');
+                navMenu.classList.remove('open'); // Chiudi menu mobile
+                window.scrollTo(0, 0);
+            });
+        });
+
+        // === TEMA SCURO (LocalStorage) ===
+        const themeToggle = document.getElementById('theme-toggle');
+        function initTheme() {
+            document.documentElement.setAttribute('data-theme', state.theme);
+        }
+        themeToggle.addEventListener('click', () => {
+            state.theme = state.theme === 'light' ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', state.theme);
+            localStorage.setItem('groovehub_theme', state.theme);
+            showToast(`Tema ${state.theme === 'dark' ? 'Scuro' : 'Chiaro'} attivato`);
+        });
+
+        // === LOGICA CATALOGO E FILTRI ===
+        const searchInput = document.getElementById('search');
+        const filterSelect = document.getElementById('filter');
+        const sortSelect = document.getElementById('sort');
+        const resetBtn = document.getElementById('reset-filters');
+        const grid = document.getElementById('product-grid');
+        const loadMoreBtn = document.getElementById('load-more');
+
+        function applyFiltersAndRender(resetPage = true) {
+            if (resetPage) state.currentPage = 1;
+
+            let filtered = allProducts.filter(p => {
+                const matchSearch = p.title.toLowerCase().includes(state.filters.search.toLowerCase()) || 
+                                    p.artist.toLowerCase().includes(state.filters.search.toLowerCase());
+                const matchCat = state.filters.category === 'all' || p.category === state.filters.category;
+                return matchSearch && matchCat;
+            });
+
+            // Ordinamento
+            filtered.sort((a, b) => {
+                if (state.filters.sort === 'name-asc') return a.title.localeCompare(b.title);
+                if (state.filters.sort === 'price-asc') return a.price - b.price;
+                if (state.filters.sort === 'price-desc') return b.price - a.price;
+            });
+
+            state.products = filtered;
+            renderProducts(resetPage);
+        }
+
+        function renderProducts(clearGrid = false) {
+            if (clearGrid) grid.innerHTML = '';
+
+            const startIndex = (state.currentPage - 1) * state.itemsPerPage;
+            const endIndex = startIndex + state.itemsPerPage;
+            const paginatedItems = state.products.slice(startIndex, endIndex);
+
+            if (state.products.length === 0) {
+                grid.innerHTML = '<p>Nessun prodotto trovato.</p>';
+                loadMoreBtn.style.display = 'none';
+                return;
+            }
+
+            paginatedItems.forEach(p => {
+                const card = document.createElement('article');
+                card.className = 'card';
+                card.innerHTML = `
+                    <img src="${p.img}" alt="Copertina di ${p.title} di ${p.artist}" loading="lazy">
+                    <div class="card-body">
+                        <span style="font-size: 0.8rem; text-transform: uppercase; color: var(--secondary);">${p.category}</span>
+                        <h3 class="card-title">${p.title}</h3>
+                        <p>${p.artist}</p>
+                        <p class="card-price">€${p.price.toFixed(2)}</p>
+                        <div class="card-actions">
+                            <button class="btn-secondary" onclick="openModal(${p.id})" aria-label="Dettagli ${p.title}">Dettagli</button>
+                            <button class="btn-primary" onclick="addToCart(${p.id})" aria-label="Aggiungi ${p.title} al carrello">Aggiungi</button>
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+
+            // Gestione visibilità bottone "Carica altri"
+            loadMoreBtn.style.display = endIndex >= state.products.length ? 'none' : 'inline-block';
+        }
+
+        // Event Listeners per filtri
+        searchInput.addEventListener('input', (e) => { state.filters.search = e.target.value; applyFiltersAndRender(); });
+        filterSelect.addEventListener('change', (e) => { state.filters.category = e.target.value; applyFiltersAndRender(); });
+        sortSelect.addEventListener('change', (e) => { state.filters.sort = e.target.value; applyFiltersAndRender(); });
+        
+        resetBtn.addEventListener('click', () => {
+            searchInput.value = ''; filterSelect.value = 'all'; sortSelect.value = 'name-asc';
+            state.filters = { search: '', category: 'all', sort: 'name-asc' };
+            applyFiltersAndRender();
+        });
+
+        loadMoreBtn.addEventListener('click', () => {
+            state.currentPage++;
+            renderProducts(false);
+        });
+
+        // === MODALE DETTAGLI ===
+        const dialog = document.getElementById('product-modal');
+        const modalContent = document.getElementById('modal-content');
+        const closeModalBtn = document.querySelector('.close-modal');
+
+        window.openModal = (id) => {
+            const product = allProducts.find(p => p.id === id);
+            if (!product) return;
+            
+            modalContent.innerHTML = `
+                <h2 id="modal-title">${product.title}</h2>
+                <p id="modal-desc" style="margin-bottom: 1rem;">Autore: ${product.artist} | Formato: ${product.category}</p>
+                <img src="${product.img}" alt="${product.title}">
+                <p style="font-size: 1.5rem; color: var(--primary-color); font-weight: bold;">€${product.price.toFixed(2)}</p>
+                <button class="btn-primary" style="width: 100%; margin-top: 1rem;" onclick="addToCart(${product.id}); document.getElementById('product-modal').close();">Aggiungi al Carrello</button>
+            `;
+            dialog.showModal();
+        };
+
+        closeModalBtn.addEventListener('click', () => dialog.close());
+
+        // Chiusura click fuori (Backdrop)
+        dialog.addEventListener('click', (e) => {
+            if (e.target === dialog) dialog.close();
+        });
+
+        // === LOGICA CARRELLO ===
+        window.addToCart = (id) => {
+            const product = allProducts.find(p => p.id === id);
+            state.cart.push(product);
+            saveCart();
+            updateCartUI();
+            showToast(`"${product.title}" aggiunto al carrello!`);
+        };
+
+        window.removeFromCart = (index) => {
+            state.cart.splice(index, 1);
+            saveCart();
+            updateCartUI();
+            showToast(`Articolo rimosso dal carrello.`);
+        };
+
+        function saveCart() {
+            localStorage.setItem('groovehub_cart', JSON.stringify(state.cart));
+        }
+
+        function updateCartUI() {
+            document.getElementById('cart-count').innerText = state.cart.length;
+            const cartItemsContainer = document.getElementById('cart-items');
+            
+            if (state.cart.length === 0) {
+                cartItemsContainer.innerHTML = '<p>Il tuo carrello è vuoto.</p>';
+                document.getElementById('cart-total').innerText = '€ 0.00';
+                return;
+            }
+
+            cartItemsContainer.innerHTML = '';
+            let total = 0;
+            state.cart.forEach((item, index) => {
+                total += item.price;
+                cartItemsContainer.innerHTML += `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border: 1px solid var(--border-color); border-radius: 4px; margin-bottom: 0.5rem; background: var(--card-bg);">
+                        <div>
+                            <strong>${item.title}</strong> - ${item.artist} (${item.category})
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <span>€${item.price.toFixed(2)}</span>
+                            <button class="btn-secondary" style="padding: 0.3rem 0.6rem; color: red; border-color: red;" onclick="removeFromCart(${index})" aria-label="Rimuovi ${item.title}">X</button>
+                        </div>
+                    </div>
+                `;
+            });
+            document.getElementById('cart-total').innerText = `€ ${total.toFixed(2)}`;
+        }
+
+        // === NOTIFICHE TOAST ===
+        function showToast(message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerText = message;
+            toast.setAttribute('role', 'alert');
+            container.appendChild(toast);
+            
+            // Rimuovi elemento dal DOM dopo l'animazione (3s totali)
+            setTimeout(() => { toast.remove(); }, 3000);
+        }
+    </script>
+</body>
+</html>
