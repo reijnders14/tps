@@ -3,37 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ThePopLife - Showroom Digitale</title>
+    <title>ThePopLife - Music Store</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700;900&display=swap" rel="stylesheet">
+    
     <style>
         /* === VARIABILI CSS E RESET === */
         :root {
             --bg-color: #f4f7f6;
-            --text-color: #2b2d42;
-            --primary-color: #ef233c;
+            --text-color: #1a1a1a;
+            --primary-color: #e63946;
             --primary-hover: #d90429;
-            --secondary-color: #8d99ae;
+            --secondary-color: #6c757d;
             --card-bg: #ffffff;
-            --border-color: #edf2f4;
-            --hero-bg: linear-gradient(135deg, #2b2d42, #8d99ae);
-            --hero-text: #ffffff;
+            --border-color: #e0e0e0;
+            --hero-bg: linear-gradient(135deg, #1d3557, #457b9d);
+            --footer-bg: #111111;
+            --footer-text: #f1faee;
             --space-sm: 0.5rem;
             --space-md: 1rem;
             --space-lg: 2rem;
             --space-xl: 4rem;
-            --font-main: 'Inter', system-ui, sans-serif;
+            --font-main: 'Outfit', system-ui, sans-serif;
             --transition: all 0.3s ease;
         }
 
         [data-theme="dark"] {
-            --bg-color: #121212;
-            --text-color: #f8f9fa;
-            --primary-color: #ff4757;
-            --primary-hover: #ff6b81;
-            --secondary-color: #a4b0be;
-            --card-bg: #1e1e1e;
-            --border-color: #2f3542;
-            --hero-bg: linear-gradient(135deg, #000000, #2f3542);
-            --hero-text: #ffffff;
+            --bg-color: #0d0d0d;
+            --text-color: #f1faee;
+            --primary-color: #e63946;
+            --primary-hover: #ff4d6d;
+            --secondary-color: #a8dadc;
+            --card-bg: #1a1a1a;
+            --border-color: #333333;
+            --hero-bg: linear-gradient(135deg, #000000, #1d3557);
+            --footer-bg: #000000;
+            --footer-text: #ffffff;
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -43,135 +49,104 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
             transition: background-color var(--transition), color var(--transition);
         }
 
         /* Accessibilità */
-        .visually-hidden {
-            position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
-            overflow: hidden; clip: rect(0, 0, 0, 0); border: 0;
-        }
+        .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
         *:focus-visible { outline: 3px solid var(--primary-color); outline-offset: 2px; }
 
-        button, a { cursor: pointer; transition: var(--transition); }
+        button, a { cursor: pointer; transition: var(--transition); font-family: inherit; }
         button:disabled { opacity: 0.5; cursor: not-allowed; }
 
         /* === HEADER === */
-        header {
-            background-color: var(--card-bg);
-            border-bottom: 1px solid var(--border-color);
-            padding: var(--space-md);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-        }
-
-        .nav-container {
-            display: flex; justify-content: space-between; align-items: center;
-            max-width: 1200px; margin: 0 auto;
-        }
-
-        .logo { font-size: 1.8rem; font-weight: 900; letter-spacing: -1px; color: var(--primary-color); }
+        header { background-color: var(--card-bg); border-bottom: 1px solid var(--border-color); padding: var(--space-md); position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; }
+        .logo { font-size: 2rem; font-weight: 900; letter-spacing: -1px; color: var(--primary-color); text-transform: uppercase; }
 
         .hamburger { display: flex; flex-direction: column; gap: 5px; background: none; border: none; padding: var(--space-sm); }
         .hamburger span { display: block; width: 25px; height: 3px; background-color: var(--text-color); transition: var(--transition); }
 
-        nav ul {
-            list-style: none; display: none; flex-direction: column; gap: var(--space-md);
-            position: absolute; top: 100%; left: 0; right: 0;
-            background-color: var(--card-bg); padding: var(--space-md); border-bottom: 1px solid var(--border-color);
-        }
+        nav ul { list-style: none; display: none; flex-direction: column; gap: var(--space-md); position: absolute; top: 100%; left: 0; right: 0; background-color: var(--card-bg); padding: var(--space-md); border-bottom: 1px solid var(--border-color); }
         nav ul.open { display: flex; }
-
-        nav button.nav-link {
-            background: none; border: none; color: var(--text-color); font-size: 1.1rem;
-            font-weight: 600; width: 100%; text-align: left;
-        }
+        nav button.nav-link { background: none; border: none; color: var(--text-color); font-size: 1.1rem; font-weight: 700; width: 100%; text-align: left; text-transform: uppercase; }
         nav button.nav-link:hover { color: var(--primary-color); }
 
         /* === MAIN CONTENT === */
-        main { max-width: 1200px; margin: 0 auto; padding: var(--space-lg) var(--space-md); min-height: 80vh; }
+        main { flex: 1; max-width: 1200px; margin: 0 auto; padding: var(--space-lg) var(--space-md); width: 100%; }
         .page-section { display: none; animation: fadeIn 0.4s ease; }
         .page-section.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
         /* === HOME MODERNA === */
-        .hero {
-            background: var(--hero-bg); color: var(--hero-text);
-            text-align: center; padding: var(--space-xl) var(--space-md);
-            border-radius: 16px; box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            margin-bottom: var(--space-xl);
-            position: relative; overflow: hidden;
-        }
-        .hero::after {
-            content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%;
-            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
-            pointer-events: none;
-        }
-        .hero h1 { font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 900; margin-bottom: var(--space-sm); line-height: 1.1; }
+        .hero { background: var(--hero-bg); color: #fff; text-align: center; padding: var(--space-xl) var(--space-md); border-radius: 16px; margin-bottom: var(--space-xl); position: relative; overflow: hidden; }
+        .hero h1 { font-size: clamp(2.5rem, 6vw, 5rem); font-weight: 900; margin-bottom: var(--space-sm); line-height: 1; text-transform: uppercase; }
         .hero p { font-size: 1.2rem; opacity: 0.9; margin-bottom: var(--space-lg); max-width: 600px; margin-left: auto; margin-right: auto; }
         
-        .btn-primary { background-color: var(--primary-color); color: white; border: none; padding: 1rem 2rem; border-radius: 50px; font-size: 1.1rem; font-weight: bold; box-shadow: 0 4px 15px rgba(239, 35, 60, 0.4); }
-        .btn-primary:hover:not(:disabled) { background-color: var(--primary-hover); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(239, 35, 60, 0.6); }
+        .btn-primary { background-color: var(--primary-color); color: white; border: none; padding: 1rem 2rem; border-radius: 50px; font-size: 1.1rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-primary:hover:not(:disabled) { background-color: var(--primary-hover); transform: scale(1.05); }
 
-        /* Newsletter Section */
-        .newsletter { background-color: var(--card-bg); padding: var(--space-lg); border-radius: 16px; text-align: center; border: 1px solid var(--border-color); margin-top: var(--space-xl); }
-        .newsletter h2 { margin-bottom: var(--space-sm); }
-        .newsletter form { display: flex; flex-direction: column; gap: var(--space-md); max-width: 400px; margin: var(--space-md) auto 0; }
-        .newsletter input { padding: 1rem; border: 2px solid var(--border-color); border-radius: 50px; outline: none; background: var(--bg-color); color: var(--text-color); }
-        .newsletter input:focus { border-color: var(--primary-color); }
+        .section-title { font-size: 2rem; font-weight: 900; margin-bottom: var(--space-lg); text-transform: uppercase; border-bottom: 4px solid var(--primary-color); display: inline-block; padding-bottom: 5px; }
+
+        /* Griglia Prodotti generica (usata in Home e Catalogo) */
+        .grid { display: grid; grid-template-columns: 1fr; gap: var(--space-lg); margin-bottom: var(--space-xl); }
+        .card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 8px; overflow: hidden; display: flex; flex-direction: column; transition: transform var(--transition); }
+        .card:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        .card img { width: 100%; height: 300px; object-fit: cover; border-bottom: 1px solid var(--border-color); }
+        .card-body { padding: var(--space-md); display: flex; flex-direction: column; flex-grow: 1; }
+        .card-meta { display: flex; gap: 10px; font-size: 0.8rem; text-transform: uppercase; color: var(--secondary-color); font-weight: 700; margin-bottom: var(--space-sm); }
+        .card-title { font-size: 1.4rem; font-weight: 900; margin-bottom: 0.2rem; line-height: 1.2; }
+        .card-artist { font-size: 1.1rem; color: var(--secondary-color); margin-bottom: var(--space-md); }
+        .card-price { font-weight: 900; font-size: 1.5rem; color: var(--primary-color); margin-bottom: var(--space-md); }
+        .card-actions { margin-top: auto; display: flex; gap: var(--space-sm); }
+        .card-actions button { flex: 1; padding: 0.8rem; border-radius: 50px; font-weight: 700; text-transform: uppercase; font-size: 0.9rem; }
+
+        .btn-secondary { background-color: transparent; color: var(--text-color); border: 2px solid var(--text-color); }
+        .btn-secondary:hover { background-color: var(--text-color); color: var(--card-bg); }
 
         /* === CATALOGO === */
-        .controls { display: flex; flex-direction: column; gap: var(--space-md); margin-bottom: var(--space-lg); background: var(--card-bg); padding: var(--space-lg); border-radius: 12px; border: 1px solid var(--border-color); }
-        .controls input, .controls select { padding: 0.8rem; border: 1px solid var(--border-color); border-radius: 8px; background: var(--bg-color); color: var(--text-color); width: 100%; font-family: inherit; }
-        
-        .grid { display: grid; grid-template-columns: 1fr; gap: var(--space-lg); }
-        
-        .card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; overflow: hidden; display: flex; flex-direction: column; transition: transform var(--transition), box-shadow var(--transition); }
-        .card:hover { transform: translateY(-5px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
-        .card img { width: 100%; height: 280px; object-fit: cover; }
-        .card-body { padding: var(--space-md); display: flex; flex-direction: column; flex-grow: 1; }
-        .card-meta { display: flex; gap: 10px; font-size: 0.8rem; text-transform: uppercase; color: var(--secondary-color); font-weight: bold; margin-bottom: var(--space-sm); }
-        .card-title { font-size: 1.3rem; margin-bottom: 0.2rem; }
-        .card-artist { font-size: 1rem; color: var(--secondary-color); margin-bottom: var(--space-md); }
-        .card-price { font-weight: 900; font-size: 1.4rem; color: var(--primary-color); margin-bottom: var(--space-md); }
-        .card-actions { margin-top: auto; display: flex; gap: var(--space-sm); }
-        .card-actions button { flex: 1; padding: 0.8rem; border-radius: 8px; }
+        .controls { display: grid; grid-template-columns: 1fr; gap: var(--space-md); margin-bottom: var(--space-lg); background: var(--card-bg); padding: var(--space-md); border-radius: 8px; border: 1px solid var(--border-color); }
+        .controls input, .controls select { padding: 1rem; border: 1px solid var(--border-color); border-radius: 4px; background: var(--bg-color); color: var(--text-color); font-weight: 700; }
+        .load-more-container { text-align: center; margin-bottom: var(--space-xl); }
 
-        .btn-secondary { background-color: transparent; color: var(--text-color); border: 2px solid var(--border-color); font-weight: bold; }
-        .btn-secondary:hover { border-color: var(--text-color); }
-
-        .load-more-container { text-align: center; margin-top: var(--space-lg); }
+        /* === FOOTER E-COMMERCE === */
+        footer { background-color: var(--footer-bg); color: var(--footer-text); padding: var(--space-xl) var(--space-md) var(--space-md); margin-top: auto; }
+        .footer-grid { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1fr; gap: var(--space-lg); margin-bottom: var(--space-lg); border-bottom: 1px solid #333; padding-bottom: var(--space-lg); }
+        .footer-col h4 { font-size: 1.2rem; font-weight: 900; text-transform: uppercase; margin-bottom: var(--space-md); color: var(--primary-color); }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: var(--space-sm); }
+        .footer-col ul li a { color: #aaa; text-decoration: none; transition: color 0.3s; }
+        .footer-col ul li a:hover { color: #fff; text-decoration: underline; }
+        .footer-bottom { text-align: center; font-size: 0.9rem; color: #666; max-width: 1200px; margin: 0 auto; }
+        
+        .footer-newsletter input { width: 100%; padding: 0.8rem; margin-bottom: 0.5rem; border: none; border-radius: 4px; }
+        .footer-newsletter button { width: 100%; padding: 0.8rem; background-color: var(--primary-color); color: white; border: none; font-weight: bold; text-transform: uppercase; border-radius: 4px; }
 
         /* === MODALE & TOAST === */
-        dialog { margin: auto; border: none; border-radius: 16px; background-color: var(--card-bg); color: var(--text-color); max-width: 500px; width: 90%; box-shadow: 0 25px 50px rgba(0,0,0,0.25); }
-        dialog::backdrop { background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px); }
+        dialog { margin: auto; border: none; border-radius: 8px; background-color: var(--card-bg); color: var(--text-color); max-width: 500px; width: 90%; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
+        dialog::backdrop { background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(5px); }
         .modal-content { padding: var(--space-lg); text-align: center; }
-        .modal-content img { max-width: 100%; height: auto; border-radius: 8px; margin-bottom: var(--space-md); box-shadow: 0 10px 20px rgba(0,0,0,0.1); }
-        .close-modal { position: absolute; top: 15px; right: 15px; background: var(--bg-color); border: none; width: 35px; height: 35px; border-radius: 50%; font-size: 1.2rem; color: var(--text-color); display: flex; align-items: center; justify-content: center; }
+        .modal-content img { max-width: 100%; height: auto; border-radius: 4px; margin-bottom: var(--space-md); }
+        .close-modal { position: absolute; top: 15px; right: 15px; background: var(--bg-color); border: none; width: 40px; height: 40px; border-radius: 50%; font-size: 1.5rem; font-weight: bold; color: var(--text-color); }
 
         #toast-container { position: fixed; bottom: 20px; right: 20px; display: flex; flex-direction: column; gap: 10px; z-index: 1000; }
-        .toast { background-color: var(--text-color); color: var(--card-bg); padding: 1rem 1.5rem; border-radius: 8px; box-shadow: 0 10px 20px rgba(0,0,0,0.15); animation: slideIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55), fadeOut 0.3s ease 2.7s forwards; font-weight: bold; }
-        
+        .toast { background-color: var(--text-color); color: var(--card-bg); padding: 1rem 2rem; border-radius: 4px; font-weight: 700; animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards; }
         @keyframes slideIn { from { transform: translateX(120%); } to { transform: translateX(0); } }
         @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
-
-        /* === FOOTER === */
-        footer { text-align: center; padding: var(--space-lg); background-color: var(--card-bg); border-top: 1px solid var(--border-color); margin-top: auto; }
 
         /* === MEDIA QUERIES === */
         @media (min-width: 768px) {
             .hamburger { display: none; }
             nav ul { display: flex; flex-direction: row; position: static; background: none; border: none; padding: 0; }
-            nav button.nav-link { width: auto; }
-            .controls { flex-direction: row; align-items: center; }
-            .controls > * { flex: 1; }
+            nav button.nav-link { width: auto; font-size: 0.9rem; }
+            .controls { grid-template-columns: repeat(5, 1fr); align-items: center; }
             .grid { grid-template-columns: repeat(2, 1fr); }
-            .newsletter form { flex-direction: row; max-width: 600px; }
-            .newsletter form button { flex-shrink: 0; }
+            .footer-grid { grid-template-columns: repeat(4, 1fr); }
         }
-        @media (min-width: 1024px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (min-width: 1024px) { .grid { grid-template-columns: repeat(4, 1fr); } }
     </style>
 </head>
 <body>
@@ -196,29 +171,27 @@
     <main>
         <section id="home" class="page-section active">
             <div class="hero">
-                <h1>Il battito della tua musica.</h1>
-                <p>Scopri la nostra selezione curata di Vinili e CD. Dai grandi classici alle ultime uscite, porta l'esperienza fisica del suono nella tua vita.</p>
-                <button class="btn-primary nav-link" data-target="catalog">Entra nello Store</button>
+                <h1>Il volume a mille.</h1>
+                <p>Vinili d'epoca, CD rari e le ultime uscite mondiali. Trova il sound perfetto per la tua collezione.</p>
+                <button class="btn-primary nav-link" data-target="catalog" style="margin-top: 1rem;">Esplora tutto</button>
             </div>
 
-            <section class="newsletter">
-                <h2>ThePopLife Club</h2>
-                <p>Iscriviti per ricevere aggiornamenti sulle nuove uscite, restock di dischi rari e sconti esclusivi.</p>
-                <form id="newsletter-form">
-                    <label for="email" class="visually-hidden">Indirizzo Email</label>
-                    <input type="email" id="email" placeholder="Inserisci la tua email..." required>
-                    <button type="submit" class="btn-primary">Iscriviti Ora</button>
-                </form>
-            </section>
+            <h2 class="section-title">Articoli in Evidenza</h2>
+            <div class="grid" id="featured-grid">
+                </div>
+
+            <h2 class="section-title" style="margin-top: 2rem;">Novità in Arrivo</h2>
+            <div class="grid" id="coming-soon-grid">
+                </div>
         </section>
 
         <section id="catalog" class="page-section">
-            <h2 style="margin-bottom: var(--space-md);">Catalogo Prodotti</h2>
+            <h2 class="section-title">Store Ufficiale</h2>
             
             <div class="controls">
                 <div>
                     <label for="search" class="visually-hidden">Cerca</label>
-                    <input type="text" id="search" placeholder="Cerca album o artista..." aria-label="Cerca prodotti">
+                    <input type="text" id="search" placeholder="Cerca artista o album..." aria-label="Cerca prodotti">
                 </div>
                 <div>
                     <label for="filter-format" class="visually-hidden">Formato</label>
@@ -226,48 +199,86 @@
                         <option value="all">Tutti i formati</option>
                         <option value="Vinile">Vinili</option>
                         <option value="CD">CDs</option>
+                        <option value="Cassetta">Cassette</option>
                     </select>
                 </div>
                 <div>
-                    <label for="filter-genre" class="visually-hidden">Genere Musicale</label>
-                    <select id="filter-genre" aria-label="Filtra per genere musicale">
+                    <label for="filter-genre" class="visually-hidden">Genere</label>
+                    <select id="filter-genre" aria-label="Filtra per genere">
                         <option value="all">Tutti i generi</option>
                         <option value="Rock">Rock</option>
                         <option value="Pop">Pop</option>
                         <option value="Electronic">Elettronica</option>
                         <option value="Jazz">Jazz</option>
+                        <option value="Hip Hop">Hip Hop</option>
+                        <option value="Indie">Indie</option>
+                        <option value="R&B">R&B</option>
                     </select>
                 </div>
                 <div>
                     <label for="sort" class="visually-hidden">Ordina</label>
                     <select id="sort" aria-label="Ordina prodotti">
-                        <option value="name-asc">Nome (A-Z)</option>
-                        <option value="price-asc">Prezzo (Crescente)</option>
-                        <option value="price-desc">Prezzo (Decrescente)</option>
+                        <option value="name-asc">A - Z</option>
+                        <option value="price-asc">Prezzo Minore</option>
+                        <option value="price-desc">Prezzo Maggiore</option>
                     </select>
                 </div>
-                <button id="reset-filters" class="btn-secondary">Reset</button>
+                <button id="reset-filters" class="btn-secondary" style="padding: 1rem; font-weight: bold; border-radius: 4px;">RESET</button>
             </div>
 
             <div class="grid" id="product-grid" aria-live="polite"></div>
 
             <div class="load-more-container">
-                <button id="load-more" class="btn-primary">Carica altri dischi</button>
+                <button id="load-more" class="btn-primary">Mostra Altri Dischi</button>
             </div>
         </section>
 
         <section id="cart" class="page-section">
-            <h2>Il tuo Carrello</h2>
+            <h2 class="section-title">Il tuo Carrello</h2>
             <div id="cart-items" style="margin-top: var(--space-lg);"></div>
-            <div style="background: var(--card-bg); padding: var(--space-md); border-radius: 12px; margin-top: var(--space-lg); border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-                <h3>Totale: <span id="cart-total" style="color: var(--primary-color);">€ 0.00</span></h3>
-                <button class="btn-primary" onclick="alert('Checkout non implementato in questa demo!')">Procedi al Checkout</button>
+            <div style="background: var(--card-bg); padding: var(--space-lg); border-radius: 8px; margin-top: var(--space-lg); border: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                <h3>TOTALE: <span id="cart-total" style="color: var(--primary-color); font-size: 2rem; font-weight: 900;">€ 0.00</span></h3>
+                <button class="btn-primary" onclick="alert('Checkout simulato con successo!')">Procedi al Pagamento</button>
             </div>
         </section>
     </main>
 
     <footer>
-        <p>&copy; 2026 ThePopLife - Showroom Digitale. Tutti i diritti riservati.</p>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>ThePopLife</h4>
+                <p style="color: #aaa; font-size: 0.9rem; margin-bottom: 1rem;">Il tuo punto di riferimento per la musica fisica. Dal 2026 celebriamo il suono puro e incontaminato dei supporti analogici e digitali.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Servizio Clienti</h4>
+                <ul>
+                    <li><a href="#">Contattaci</a></li>
+                    <li><a href="#">Spedizioni e Resi</a></li>
+                    <li><a href="#">Traccia il tuo ordine</a></li>
+                    <li><a href="#">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Info Legali</h4>
+                <ul>
+                    <li><a href="#">Termini di Servizio</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Cookie Policy</a></li>
+                    <li><a href="#">Metodi di pagamento</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Resta Aggiornato</h4>
+                <form class="footer-newsletter" id="newsletter-form">
+                    <label for="footer-email" class="visually-hidden">Email per Newsletter</label>
+                    <input type="email" id="footer-email" placeholder="Inserisci la tua email" required>
+                    <button type="submit">Iscriviti</button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 ThePopLife. Realizzato per gli amanti della musica.</p>
+        </div>
     </footer>
 
     <dialog id="product-modal" aria-labelledby="modal-title" aria-describedby="modal-desc">
@@ -278,25 +289,35 @@
     <div id="toast-container" aria-live="polite"></div>
 
     <script>
-        // === MOCK DATA AGGIORNATI CON GENERE ===
+        // === DATI PRODOTTI ESPANSI ===
         const allProducts = [
-            { id: 1, title: "The Dark Side of the Moon", artist: "Pink Floyd", price: 35.90, category: "Vinile", genre: "Rock", img: "https://images.unsplash.com/photo-1535905557558-afc4877a26fc?auto=format&fit=crop&w=600&q=80" },
-            { id: 2, title: "Random Access Memories", artist: "Daft Punk", price: 28.50, category: "CD", genre: "Electronic", img: "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?auto=format&fit=crop&w=600&q=80" },
-            { id: 3, title: "Abbey Road", artist: "The Beatles", price: 32.00, category: "Vinile", genre: "Rock", img: "https://images.unsplash.com/photo-1622353450917-f37fa9b1d9c1?auto=format&fit=crop&w=600&q=80" },
-            { id: 4, title: "Kind of Blue", artist: "Miles Davis", price: 25.00, category: "Vinile", genre: "Jazz", img: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80" },
-            { id: 5, title: "Nevermind", artist: "Nirvana", price: 18.90, category: "CD", genre: "Rock", img: "https://images.unsplash.com/photo-1525362081669-2b476bb628c3?auto=format&fit=crop&w=600&q=80" },
-            { id: 6, title: "Thriller", artist: "Michael Jackson", price: 29.99, category: "Vinile", genre: "Pop", img: "https://images.unsplash.com/photo-1588693891880-997818eecf9e?auto=format&fit=crop&w=600&q=80" },
-            { id: 7, title: "Rumours", artist: "Fleetwood Mac", price: 22.50, category: "CD", genre: "Rock", img: "https://images.unsplash.com/photo-1458560871784-56d23406c091?auto=format&fit=crop&w=600&q=80" },
-            { id: 8, title: "Future Nostalgia", artist: "Dua Lipa", price: 34.00, category: "Vinile", genre: "Pop", img: "https://images.unsplash.com/photo-1619983081563-430f63602796?auto=format&fit=crop&w=600&q=80" }
+            { id: 1, title: "The Dark Side of the Moon", artist: "Pink Floyd", price: 35.90, category: "Vinile", genre: "Rock", featured: true, upcoming: false, img: "https://images.unsplash.com/photo-1535905557558-afc4877a26fc?auto=format&fit=crop&w=600&q=80" },
+            { id: 2, title: "Random Access Memories", artist: "Daft Punk", price: 28.50, category: "CD", genre: "Electronic", featured: true, upcoming: false, img: "https://images.unsplash.com/photo-1614613535308-eb5fbd3d2c17?auto=format&fit=crop&w=600&q=80" },
+            { id: 3, title: "Abbey Road", artist: "The Beatles", price: 32.00, category: "Vinile", genre: "Rock", featured: false, upcoming: false, img: "https://images.unsplash.com/photo-1622353450917-f37fa9b1d9c1?auto=format&fit=crop&w=600&q=80" },
+            { id: 4, title: "Kind of Blue", artist: "Miles Davis", price: 25.00, category: "Vinile", genre: "Jazz", featured: true, upcoming: false, img: "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=600&q=80" },
+            { id: 5, title: "Nevermind", artist: "Nirvana", price: 18.90, category: "CD", genre: "Rock", featured: false, upcoming: false, img: "https://images.unsplash.com/photo-1525362081669-2b476bb628c3?auto=format&fit=crop&w=600&q=80" },
+            { id: 6, title: "Thriller", artist: "Michael Jackson", price: 29.99, category: "Vinile", genre: "Pop", featured: false, upcoming: false, img: "https://images.unsplash.com/photo-1588693891880-997818eecf9e?auto=format&fit=crop&w=600&q=80" },
+            { id: 7, title: "To Pimp a Butterfly", artist: "Kendrick Lamar", price: 34.50, category: "Vinile", genre: "Hip Hop", featured: false, upcoming: false, img: "https://images.unsplash.com/photo-1516280440502-a2f183cd94be?auto=format&fit=crop&w=600&q=80" },
+            { id: 8, title: "AM", artist: "Arctic Monkeys", price: 22.00, category: "CD", genre: "Indie", featured: false, upcoming: false, img: "https://images.unsplash.com/photo-1493225457124-a1a2a5f5f922?auto=format&fit=crop&w=600&q=80" },
+            { id: 9, title: "Blonde", artist: "Frank Ocean", price: 45.00, category: "Vinile", genre: "R&B", featured: true, upcoming: false, img: "https://images.unsplash.com/photo-1619983081563-430f63602796?auto=format&fit=crop&w=600&q=80" },
+            { id: 10, title: "Le Quattro Stagioni", artist: "Antonio Vivaldi", price: 19.90, category: "CD", genre: "Classical", featured: false, upcoming: false, img: "https://images.unsplash.com/photo-1507838153414-b4b713384a76?auto=format&fit=crop&w=600&q=80" },
+            { id: 11, title: "Discovery", artist: "Daft Punk", price: 30.00, category: "Vinile", genre: "Electronic", featured: false, upcoming: false, img: "https://images.unsplash.com/photo-1508700115892-45ecd05ae2ad?auto=format&fit=crop&w=600&q=80" },
+            { id: 12, title: "Guardians of the Galaxy Vol. 1", artist: "Various Artists", price: 15.00, category: "Cassetta", genre: "Pop", featured: false, upcoming: false, img: "https://images.unsplash.com/photo-1534067332247-492931a71912?auto=format&fit=crop&w=600&q=80" },
+            
+            // Prodotti in arrivo (Upcoming)
+            { id: 13, title: "Nuovo Album 2026", artist: "The Weeknd", price: 39.90, category: "Vinile", genre: "R&B", featured: false, upcoming: true, img: "https://images.unsplash.com/photo-1611339555312-e607c8352fd7?auto=format&fit=crop&w=600&q=80" },
+            { id: 14, title: "Live at Wembley (Remastered)", artist: "Queen", price: 25.00, category: "CD", genre: "Rock", featured: false, upcoming: true, img: "https://images.unsplash.com/photo-1459749411175-04bf5292ceea?auto=format&fit=crop&w=600&q=80" },
+            { id: 15, title: "Symphony No. 9", artist: "Beethoven", price: 42.00, category: "Vinile", genre: "Classical", featured: false, upcoming: true, img: "https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?auto=format&fit=crop&w=600&q=80" },
+            { id: 16, title: "Renaissance Act II", artist: "Beyoncé", price: 40.00, category: "Vinile", genre: "Pop", featured: false, upcoming: true, img: "https://images.unsplash.com/photo-1493225457124-a1a2a5f5f922?auto=format&fit=crop&w=600&q=80" }
         ];
 
         // === STATO APPLICAZIONE ===
         let state = {
-            products: [...allProducts],
+            products: allProducts.filter(p => !p.upcoming), // Escludi i pre-order dal catalogo standard
             cart: JSON.parse(localStorage.getItem('thepoplife_cart')) || [],
             theme: localStorage.getItem('thepoplife_theme') || 'light',
             currentPage: 1,
-            itemsPerPage: 6,
+            itemsPerPage: 8,
             filters: { search: '', format: 'all', genre: 'all', sort: 'name-asc' }
         };
 
@@ -304,10 +325,11 @@
         document.addEventListener('DOMContentLoaded', () => {
             initTheme();
             updateCartUI();
+            renderHomeSections();
             applyFiltersAndRender();
         });
 
-        // === NAVIGAZIONE ===
+        // === NAVIGAZIONE SPA ===
         const hamburgerBtn = document.getElementById('hamburger-btn');
         const navMenu = document.getElementById('nav-menu');
         const sections = document.querySelectorAll('.page-section');
@@ -320,7 +342,7 @@
 
         document.querySelectorAll('.nav-link[data-target]').forEach(link => {
             link.addEventListener('click', (e) => {
-                const targetId = e.target.getAttribute('data-target');
+                const targetId = e.currentTarget.getAttribute('data-target');
                 sections.forEach(sec => sec.classList.remove('active'));
                 document.getElementById(targetId).classList.add('active');
                 navMenu.classList.remove('open');
@@ -335,32 +357,53 @@
             state.theme = state.theme === 'light' ? 'dark' : 'light';
             document.documentElement.setAttribute('data-theme', state.theme);
             localStorage.setItem('thepoplife_theme', state.theme);
-            showToast(`Modalità ${state.theme === 'dark' ? 'Scura' : 'Chiara'} attivata`);
+            showToast(`Tema ${state.theme === 'dark' ? 'Scuro' : 'Chiaro'} attivato`);
         });
 
         // === NEWSLETTER ===
-        const newsletterForm = document.getElementById('newsletter-form');
-        newsletterForm.addEventListener('submit', (e) => {
+        document.getElementById('newsletter-form').addEventListener('submit', (e) => {
             e.preventDefault();
-            const email = document.getElementById('email').value;
+            const email = document.getElementById('footer-email').value;
             localStorage.setItem('thepoplife_newsletter', email);
-            showToast(`Grazie! ${email} è stata iscritta alla newsletter.`);
-            newsletterForm.reset();
+            showToast(`Iscrizione confermata per ${email}!`);
+            e.target.reset();
         });
 
-        // === CATALOGO, FILTRI E GENERE ===
-        const searchInput = document.getElementById('search');
-        const formatSelect = document.getElementById('filter-format');
-        const genreSelect = document.getElementById('filter-genre');
-        const sortSelect = document.getElementById('sort');
-        const resetBtn = document.getElementById('reset-filters');
-        const grid = document.getElementById('product-grid');
-        const loadMoreBtn = document.getElementById('load-more');
+        // === GENERATORE CARD HTML ===
+        function createProductCard(p, isPreorder = false) {
+            const btnText = isPreorder ? "Pre-ordina" : "Aggiungi";
+            return `
+                <article class="card">
+                    <img src="${p.img}" alt="${p.title}" loading="lazy">
+                    <div class="card-body">
+                        <div class="card-meta"><span>${p.category}</span> &bull; <span>${p.genre}</span></div>
+                        <h3 class="card-title">${p.title}</h3>
+                        <p class="card-artist">${p.artist}</p>
+                        <p class="card-price">€${p.price.toFixed(2)}</p>
+                        <div class="card-actions">
+                            <button class="btn-secondary" onclick="openModal(${p.id})">Scopri</button>
+                            <button class="btn-primary" onclick="addToCart(${p.id})">${btnText}</button>
+                        </div>
+                    </div>
+                </article>
+            `;
+        }
 
+        // === HOME: SEZIONI DINAMICHE ===
+        function renderHomeSections() {
+            const featuredContainer = document.getElementById('featured-grid');
+            const upcomingContainer = document.getElementById('coming-soon-grid');
+            
+            featuredContainer.innerHTML = allProducts.filter(p => p.featured).map(p => createProductCard(p)).join('');
+            upcomingContainer.innerHTML = allProducts.filter(p => p.upcoming).map(p => createProductCard(p, true)).join('');
+        }
+
+        // === CATALOGO, FILTRI ===
         function applyFiltersAndRender(resetPage = true) {
             if (resetPage) state.currentPage = 1;
 
             let filtered = allProducts.filter(p => {
+                if(p.upcoming) return false; // Non mostrare pre-order nel catalogo standard
                 const matchSearch = p.title.toLowerCase().includes(state.filters.search.toLowerCase()) || p.artist.toLowerCase().includes(state.filters.search.toLowerCase());
                 const matchFormat = state.filters.format === 'all' || p.category === state.filters.format;
                 const matchGenre = state.filters.genre === 'all' || p.genre === state.filters.genre;
@@ -374,10 +417,12 @@
             });
 
             state.products = filtered;
-            renderProducts(resetPage);
+            renderCatalog(resetPage);
         }
 
-        function renderProducts(clearGrid = false) {
+        function renderCatalog(clearGrid = false) {
+            const grid = document.getElementById('product-grid');
+            const loadMoreBtn = document.getElementById('load-more');
             if (clearGrid) grid.innerHTML = '';
 
             const startIndex = (state.currentPage - 1) * state.itemsPerPage;
@@ -385,45 +430,30 @@
             const paginatedItems = state.products.slice(startIndex, endIndex);
 
             if (state.products.length === 0) {
-                grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding: 2rem;">Nessun disco trovato con questi filtri.</div>';
+                grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding: 3rem; font-size:1.2rem;">Nessun risultato trovato.</div>';
                 loadMoreBtn.style.display = 'none';
                 return;
             }
 
-            paginatedItems.forEach(p => {
-                const card = document.createElement('article');
-                card.className = 'card';
-                card.innerHTML = `
-                    <img src="${p.img}" alt="Copertina di ${p.title}" loading="lazy">
-                    <div class="card-body">
-                        <div class="card-meta"><span>${p.category}</span> &bull; <span>${p.genre}</span></div>
-                        <h3 class="card-title">${p.title}</h3>
-                        <p class="card-artist">${p.artist}</p>
-                        <p class="card-price">€${p.price.toFixed(2)}</p>
-                        <div class="card-actions">
-                            <button class="btn-secondary" onclick="openModal(${p.id})">Scopri</button>
-                            <button class="btn-primary" onclick="addToCart(${p.id})">Aggiungi</button>
-                        </div>
-                    </div>
-                `;
-                grid.appendChild(card);
-            });
-
+            paginatedItems.forEach(p => { grid.innerHTML += createProductCard(p); });
             loadMoreBtn.style.display = endIndex >= state.products.length ? 'none' : 'inline-block';
         }
 
-        searchInput.addEventListener('input', (e) => { state.filters.search = e.target.value; applyFiltersAndRender(); });
-        formatSelect.addEventListener('change', (e) => { state.filters.format = e.target.value; applyFiltersAndRender(); });
-        genreSelect.addEventListener('change', (e) => { state.filters.genre = e.target.value; applyFiltersAndRender(); });
-        sortSelect.addEventListener('change', (e) => { state.filters.sort = e.target.value; applyFiltersAndRender(); });
+        document.getElementById('search').addEventListener('input', (e) => { state.filters.search = e.target.value; applyFiltersAndRender(); });
+        document.getElementById('filter-format').addEventListener('change', (e) => { state.filters.format = e.target.value; applyFiltersAndRender(); });
+        document.getElementById('filter-genre').addEventListener('change', (e) => { state.filters.genre = e.target.value; applyFiltersAndRender(); });
+        document.getElementById('sort').addEventListener('change', (e) => { state.filters.sort = e.target.value; applyFiltersAndRender(); });
         
-        resetBtn.addEventListener('click', () => {
-            searchInput.value = ''; formatSelect.value = 'all'; genreSelect.value = 'all'; sortSelect.value = 'name-asc';
+        document.getElementById('reset-filters').addEventListener('click', () => {
+            document.getElementById('search').value = ''; 
+            document.getElementById('filter-format').value = 'all'; 
+            document.getElementById('filter-genre').value = 'all'; 
+            document.getElementById('sort').value = 'name-asc';
             state.filters = { search: '', format: 'all', genre: 'all', sort: 'name-asc' };
             applyFiltersAndRender();
         });
 
-        loadMoreBtn.addEventListener('click', () => { state.currentPage++; renderProducts(false); });
+        document.getElementById('load-more').addEventListener('click', () => { state.currentPage++; renderCatalog(false); });
 
         // === MODALE ===
         const dialog = document.getElementById('product-modal');
@@ -431,17 +461,15 @@
         
         window.openModal = (id) => {
             const p = allProducts.find(item => item.id === id);
-            if (!p) return;
-            
             modalContent.innerHTML = `
-                <div style="display:flex; justify-content:center; gap: 10px; margin-bottom: 10px; font-weight:bold; color:var(--secondary-color); font-size: 0.9rem;">
-                    <span>${p.category}</span> | <span>${p.genre}</span>
-                </div>
-                <h2 id="modal-title" style="margin-bottom: 0.5rem;">${p.title}</h2>
-                <p id="modal-desc" style="margin-bottom: 1rem; font-size: 1.1rem;">${p.artist}</p>
-                <img src="${p.img}" alt="${p.title}">
-                <p style="font-size: 2rem; color: var(--primary-color); font-weight: 900; margin: 1rem 0;">€${p.price.toFixed(2)}</p>
-                <button class="btn-primary" style="width: 100%; border-radius: 8px;" onclick="addToCart(${p.id}); document.getElementById('product-modal').close();">Aggiungi al Carrello</button>
+                <div style="font-weight:900; color:var(--secondary-color); font-size: 1rem; margin-bottom: 10px; text-transform: uppercase;">${p.category} | ${p.genre}</div>
+                <h2 id="modal-title" style="font-size: 2rem; font-weight: 900; line-height: 1.1; margin-bottom: 0.5rem;">${p.title}</h2>
+                <p id="modal-desc" style="margin-bottom: 1rem; font-size: 1.2rem;">${p.artist}</p>
+                <img src="${p.img}" alt="${p.title}" style="border: 1px solid var(--border-color);">
+                <p style="font-size: 2.5rem; color: var(--primary-color); font-weight: 900; margin: 1rem 0;">€${p.price.toFixed(2)}</p>
+                <button class="btn-primary" style="width: 100%;" onclick="addToCart(${p.id}); document.getElementById('product-modal').close();">
+                    ${p.upcoming ? 'Pre-ordina Ora' : 'Aggiungi al Carrello'}
+                </button>
             `;
             dialog.showModal();
         };
@@ -460,7 +488,7 @@
         window.removeFromCart = (index) => {
             state.cart.splice(index, 1);
             saveCart(); updateCartUI();
-            showToast(`Disco rimosso dal carrello.`);
+            showToast(`Prodotto rimosso.`);
         };
 
         function saveCart() { localStorage.setItem('thepoplife_cart', JSON.stringify(state.cart)); }
@@ -470,7 +498,7 @@
             const container = document.getElementById('cart-items');
             
             if (state.cart.length === 0) {
-                container.innerHTML = '<div style="text-align:center; padding: 3rem; background: var(--card-bg); border-radius: 12px; border: 1px dashed var(--border-color);">Il tuo carrello è tristemente vuoto. Riempiamolo di musica!</div>';
+                container.innerHTML = '<div style="text-align:center; padding: 4rem; background: var(--card-bg); border-radius: 8px; font-size: 1.2rem; border: 2px dashed var(--border-color);">Nessun articolo nel carrello.</div>';
                 document.getElementById('cart-total').innerText = '€ 0.00';
                 return;
             }
@@ -480,14 +508,14 @@
             state.cart.forEach((item, index) => {
                 total += item.price;
                 container.innerHTML += `
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 1rem; border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 0.8rem; background: var(--card-bg);">
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem; border: 1px solid var(--border-color); border-radius: 8px; margin-bottom: 1rem; background: var(--card-bg);">
                         <div style="display: flex; flex-direction: column;">
-                            <strong style="font-size: 1.1rem;">${item.title}</strong>
-                            <span style="color: var(--secondary-color); font-size: 0.9rem;">${item.artist} &bull; ${item.category}</span>
+                            <strong style="font-size: 1.3rem; font-weight: 900;">${item.title}</strong>
+                            <span style="color: var(--secondary-color); font-weight: 700; text-transform: uppercase; font-size: 0.9rem;">${item.artist} &bull; ${item.category}</span>
                         </div>
-                        <div style="display: flex; align-items: center; gap: 1.5rem;">
-                            <span style="font-weight: bold; font-size: 1.1rem;">€${item.price.toFixed(2)}</span>
-                            <button class="btn-secondary" style="padding: 0.4rem 0.8rem; color: #ef233c; border-color: #ef233c; border-radius: 8px;" onclick="removeFromCart(${index})" aria-label="Rimuovi">Elimina</button>
+                        <div style="display: flex; align-items: center; gap: 2rem;">
+                            <span style="font-weight: 900; font-size: 1.3rem;">€${item.price.toFixed(2)}</span>
+                            <button class="btn-secondary" style="padding: 0.5rem 1rem; color: var(--primary-color); border-color: var(--primary-color); border-radius: 50px;" onclick="removeFromCart(${index})" aria-label="Rimuovi">Rimuovi</button>
                         </div>
                     </div>
                 `;
@@ -495,7 +523,7 @@
             document.getElementById('cart-total').innerText = `€ ${total.toFixed(2)}`;
         }
 
-        // === TOAST NOTIFICHE ===
+        // === NOTIFICHE ===
         function showToast(message) {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
