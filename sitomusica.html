@@ -4,39 +4,32 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ThePopLife | Negozio di Musica</title>
-    
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
-    
     <style>
         :root {
-            --bg-color: #f5f0e8;
+            --bg-color: #ede5d8;
             --text-color: #1a1a1a;
             --primary-color: #8c7a6b;
-            --primary-hover: #5a4e44;
             --secondary-color: #7a7a7a;
             --card-bg: transparent;
-            --border-color: #ddd8ce;
-            --hero-bg: #ede8df;
+            --border-color: #d4cdc3;
+            --hero-bg: #e4dcd0;
             --footer-bg: #121212;
             --footer-text: #f0eee9;
-            
             --space-sm: 0.8rem;
             --space-md: 1.5rem;
             --space-lg: 3rem;
             --space-xl: 6rem;
-            
             --font-headings: 'Playfair Display', serif;
             --font-body: 'Inter', sans-serif;
             --transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
-
         [data-theme="dark"] {
             --bg-color: #0a0a0a;
             --text-color: #e8e8e8;
             --primary-color: #a39182;
-            --primary-hover: #cbbab0;
             --secondary-color: #888888;
             --card-bg: transparent;
             --border-color: #222222;
@@ -44,9 +37,7 @@
             --footer-bg: #000000;
             --footer-text: #ffffff;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
             font-family: var(--font-body);
             font-weight: 300;
@@ -58,525 +49,825 @@
             min-height: 100vh;
             transition: background-color var(--transition), color var(--transition);
         }
-
         h1, h2, h3, h4 { font-family: var(--font-headings); font-weight: 400; }
-        
-        .visually-hidden { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }
         *:focus-visible { outline: 1px solid var(--text-color); outline-offset: 4px; }
         button, a { cursor: pointer; transition: var(--transition); font-family: inherit; }
 
-        /* === HEADER === */
-        header { 
-            background-color: var(--bg-color); 
-            border-bottom: 1px solid var(--border-color); 
-            padding: var(--space-md); 
-            position: sticky; top: 0; z-index: 100; 
+        /* ===== ANIMAZIONI ===== */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(28px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-18px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes revealLine {
+            from { width: 0; }
+            to   { width: 60%; }
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideIn {
+            from { transform: translateY(100%); opacity: 0; }
+            to   { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
+
+        /* Hero animato */
+        .hero h1    { animation: fadeInUp 1s cubic-bezier(0.16,1,0.3,1) both; }
+        .hero p     { animation: fadeInUp 1s 0.2s cubic-bezier(0.16,1,0.3,1) both; }
+        .hero .btn-primary { animation: fadeInUp 1s 0.38s cubic-bezier(0.16,1,0.3,1) both; }
+
+        /* Header animato */
+        header { animation: fadeInDown 0.7s ease both; }
+
+        /* Titoli sezione con linea animata */
+        .section-title {
+            font-size: 2.5rem;
+            font-style: italic;
+            color: var(--text-color);
+            margin-bottom: var(--space-lg);
+            text-align: center;
+            position: relative;
+            animation: fadeInDown 0.7s ease both;
+        }
+        .section-title::after {
+            content: '';
+            display: block;
+            height: 1px;
+            background: var(--border-color);
+            width: 0;
+            margin: 0.6rem auto 0;
+            animation: revealLine 1s 0.3s ease forwards;
+        }
+
+        /* Cards staggered */
+        .card { opacity: 0; animation: fadeInUp 0.55s ease forwards; }
+        .card:nth-child(1) { animation-delay: 0.04s; }
+        .card:nth-child(2) { animation-delay: 0.09s; }
+        .card:nth-child(3) { animation-delay: 0.14s; }
+        .card:nth-child(4) { animation-delay: 0.19s; }
+        .card:nth-child(5) { animation-delay: 0.24s; }
+        .card:nth-child(6) { animation-delay: 0.29s; }
+        .card:nth-child(7) { animation-delay: 0.34s; }
+        .card:nth-child(8) { animation-delay: 0.39s; }
+
+        /* ===== HEADER ===== */
+        header {
+            border-bottom: 1px solid var(--border-color);
+            padding: var(--space-md);
+            position: sticky; top: 0; z-index: 100;
             backdrop-filter: blur(10px);
-            background-color: color-mix(in srgb, var(--bg-color) 90%, transparent);
+            background-color: color-mix(in srgb, var(--bg-color) 92%, transparent);
         }
-        .nav-container { display: flex; justify-content: space-between; align-items: center; max-width: 1400px; margin: 0 auto; }
-        .logo { font-family: var(--font-headings); font-size: 2rem; font-weight: 700; font-style: italic; letter-spacing: -0.5px; }
-
-        .hamburger { display: flex; flex-direction: column; gap: 6px; background: none; border: none; padding: 5px; }
-        .hamburger span { display: block; width: 30px; height: 1px; background-color: var(--text-color); transition: var(--transition); }
-
-        nav ul { list-style: none; display: none; flex-direction: column; gap: var(--space-md); position: absolute; top: 100%; left: 0; right: 0; background-color: var(--bg-color); padding: var(--space-lg); border-bottom: 1px solid var(--border-color); }
-        nav ul.open { display: flex; }
-        nav button.nav-link { 
-            background: none; border: none; color: var(--text-color); 
-            font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; 
-            text-align: left; padding-bottom: 5px;
+        .nav-container {
+            display: grid;
+            grid-template-columns: 1fr auto 1fr;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            gap: 1rem;
         }
-        nav button.nav-link:hover { color: var(--primary-color); }
+        .nav-left  { display: flex; align-items: center; gap: var(--space-lg); }
+        .nav-right { display: flex; align-items: center; gap: var(--space-lg); justify-content: flex-end; }
 
-        /* === MAIN CONTENT === */
+        .logo {
+            font-family: var(--font-headings);
+            font-size: 2rem; font-weight: 700; font-style: italic;
+            letter-spacing: -0.5px; text-align: center;
+        }
+
+        nav button.nav-link,
+        .nav-left button.nav-link,
+        .nav-right button.nav-link,
+        .mobile-nav-menu button.nav-link {
+            background: none; border: none; color: var(--text-color);
+            font-family: var(--font-body);
+            font-size: 0.85rem; font-weight: 300;
+            text-transform: uppercase; letter-spacing: 2px;
+            text-align: left; padding-bottom: 3px; position: relative;
+        }
+        nav button.nav-link::after,
+        .nav-left button.nav-link::after,
+        .nav-right button.nav-link::after {
+            content: ''; position: absolute; bottom: -1px; left: 0;
+            width: 0; height: 1px; background-color: var(--text-color);
+            transition: width 0.3s ease;
+        }
+        nav button.nav-link:hover,
+        .nav-left button.nav-link:hover,
+        .nav-right button.nav-link:hover { color: var(--primary-color); }
+        nav button.nav-link:hover::after,
+        .nav-left button.nav-link:hover::after,
+        .nav-right button.nav-link:hover::after { width: 100%; }
+
+        /* Hamburger mobile */
+        .hamburger { display: none; flex-direction: column; gap: 6px; background: none; border: none; padding: 5px; }
+        .hamburger span { display: block; width: 28px; height: 1px; background-color: var(--text-color); transition: var(--transition); }
+
+        /* Mobile nav dropdown */
+        .mobile-nav-menu {
+            display: none; flex-direction: column; gap: var(--space-md);
+            position: absolute; top: 100%; left: 0; right: 0;
+            background-color: var(--bg-color); padding: var(--space-lg);
+            border-bottom: 1px solid var(--border-color); z-index: 99;
+        }
+        .mobile-nav-menu.open { display: flex; }
+
+        /* ===== SOLE / LUNA ===== */
+        #theme-toggle {
+            background: none; border: none;
+            width: 36px; height: 36px;
+            display: flex; align-items: center; justify-content: center;
+            padding: 0; position: relative;
+        }
+        .theme-icon {
+            position: absolute;
+            width: 20px; height: 20px;
+            transition: opacity 0.4s ease, transform 0.5s cubic-bezier(0.34,1.56,0.64,1);
+            color: var(--text-color);
+        }
+        [data-theme="light"] .icon-moon { opacity: 1; transform: rotate(0deg) scale(1); }
+        [data-theme="light"] .icon-sun  { opacity: 0; transform: rotate(90deg) scale(0.5); }
+        [data-theme="dark"]  .icon-sun  { opacity: 1; transform: rotate(0deg) scale(1); }
+        [data-theme="dark"]  .icon-moon { opacity: 0; transform: rotate(-90deg) scale(0.5); }
+
+        /* ===== MAIN ===== */
         main { flex: 1; max-width: 1400px; margin: 0 auto; padding: var(--space-lg) var(--space-md); width: 100%; }
         .page-section { display: none; animation: fadeIn 0.6s ease; }
         .page-section.active { display: block; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* === HOME === */
-        .hero { 
-            background: var(--hero-bg); 
-            text-align: center; 
-            padding: var(--space-xl) var(--space-md); 
-            margin-bottom: var(--space-xl); 
+        /* ===== HERO ===== */
+        .hero {
+            background: var(--hero-bg);
+            text-align: center;
+            padding: var(--space-xl) var(--space-md);
+            margin-bottom: var(--space-xl);
             border: 1px solid var(--border-color);
         }
         .hero h1 { font-size: clamp(3rem, 8vw, 6rem); line-height: 1; margin-bottom: var(--space-md); }
         .hero p { font-size: 1.1rem; color: var(--secondary-color); margin-bottom: var(--space-lg); max-width: 500px; margin-left: auto; margin-right: auto; font-weight: 300; }
-        
-        .btn-primary { 
-            background-color: var(--text-color); color: var(--bg-color); 
-            border: 1px solid var(--text-color); padding: 1rem 2.5rem; 
-            font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; 
+
+        /* ===== BOTTONI ===== */
+        .btn-primary {
+            background-color: var(--text-color); color: var(--bg-color);
+            border: 1px solid var(--text-color); padding: 1rem 2.5rem;
+            font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px;
         }
         .btn-primary:hover:not(:disabled) { background-color: transparent; color: var(--text-color); }
-        
-        .btn-secondary { background-color: transparent; color: var(--text-color); border: 1px solid var(--border-color); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; }
+        .btn-secondary {
+            background-color: transparent; color: var(--text-color);
+            border: 1px solid var(--border-color);
+            font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;
+        }
         .btn-secondary:hover { border-color: var(--text-color); }
 
-        .section-title { 
-            font-size: 2.5rem; text-align: center; margin-bottom: var(--space-lg); 
-            font-style: italic; color: var(--text-color);
-        }
-
-        /* === GRID & CARDS === */
+        /* ===== GRID & CARDS ===== */
         .grid { display: grid; grid-template-columns: 1fr; gap: var(--space-lg); margin-bottom: var(--space-xl); }
         .card { background-color: var(--card-bg); display: flex; flex-direction: column; }
-        
         .card-img-wrapper { overflow: hidden; margin-bottom: var(--space-sm); border: 1px solid var(--border-color); aspect-ratio: 1/1; }
         .card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; }
         .card:hover img { transform: scale(1.05); }
-        
         .card-body { display: flex; flex-direction: column; flex-grow: 1; padding: 0.5rem 0; text-align: center; }
         .card-meta { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; color: var(--secondary-color); margin-bottom: 0.5rem; }
         .card-title { font-size: 1.4rem; margin-bottom: 0.2rem; }
         .card-artist { font-family: var(--font-body); font-size: 0.9rem; color: var(--secondary-color); margin-bottom: 1rem; }
         .card-price { font-family: var(--font-body); font-size: 1.1rem; color: var(--text-color); margin-bottom: 1rem; }
-        
         .card-actions { display: flex; gap: var(--space-sm); justify-content: center; opacity: 1; }
         .card-actions button { padding: 0.8rem 1.5rem; }
 
-        /* === CONTROLS === */
-        .controls { display: grid; grid-template-columns: 1fr; gap: var(--space-md); margin-bottom: var(--space-xl); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); padding: var(--space-md) 0; }
-        .controls input, .controls select { padding: 0.8rem; border: none; border-bottom: 1px solid var(--border-color); background: transparent; color: var(--text-color); font-family: var(--font-body); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; outline: none; }
+        /* ===== PAGINAZIONE ===== */
+        .load-more-container { text-align: center; margin-bottom: var(--space-xl); }
+        #load-more {
+            position: relative; overflow: hidden; padding: 1rem 3rem;
+        }
+        #load-more::before {
+            content: ''; position: absolute; bottom: 0;
+            left: 50%; right: 50%; height: 1px;
+            background: var(--text-color);
+            transition: left 0.4s ease, right 0.4s ease;
+        }
+        #load-more:hover::before { left: 0; right: 0; }
+
+        /* ===== CONTROLS ===== */
+        .controls {
+            display: grid; grid-template-columns: 1fr; gap: var(--space-md);
+            margin-bottom: var(--space-xl);
+            border-top: 1px solid var(--border-color);
+            border-bottom: 1px solid var(--border-color);
+            padding: var(--space-md) 0;
+        }
+        .controls input, .controls select {
+            padding: 0.8rem; border: none;
+            border-bottom: 1px solid var(--border-color);
+            background: transparent; color: var(--text-color);
+            font-family: var(--font-body); font-size: 0.9rem;
+            text-transform: uppercase; letter-spacing: 1px; outline: none;
+            transition: border-color 0.3s;
+        }
         .controls input:focus, .controls select:focus { border-bottom-color: var(--text-color); }
         .controls select option { background-color: var(--bg-color); color: var(--text-color); }
-        .load-more-container { text-align: center; margin-bottom: var(--space-xl); }
 
-        /* === FOOTER === */
+        /* ===== FOOTER ===== */
         footer { background-color: var(--footer-bg); color: var(--footer-text); padding: var(--space-xl) var(--space-md); margin-top: auto; font-size: 0.9rem; }
         .footer-grid { max-width: 1400px; margin: 0 auto; display: grid; grid-template-columns: 1fr; gap: var(--space-lg); padding-bottom: var(--space-xl); }
         .footer-col h4 { font-family: var(--font-body); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; margin-bottom: var(--space-md); color: var(--secondary-color); }
         .footer-col ul { list-style: none; }
         .footer-col ul li { margin-bottom: 0.8rem; }
-        .footer-col ul li a { color: var(--footer-text); text-decoration: none; transition: opacity 0.3s; opacity: 0.7; }
-        .footer-col ul li a:hover { opacity: 1; }
-        .footer-bottom { text-align: center; border-top: 1px solid #333; padding-top: var(--space-md); color: #666; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; }
-        
-        .footer-newsletter input { width: 100%; padding: 1rem 0; margin-bottom: 1rem; border: none; border-bottom: 1px solid #333; background: transparent; color: #fff; font-family: var(--font-body); outline: none; }
-        .footer-newsletter button { width: 100%; padding: 1rem; background-color: #fff; color: #000; border: none; text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; }
 
-        /* === MODALE & TOAST === */
-        dialog { margin: auto; border: 1px solid var(--border-color); background-color: var(--bg-color); color: var(--text-color); max-width: 600px; width: 90%; padding: 0; }
-        dialog::backdrop { background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); }
-        .modal-content { padding: var(--space-xl) var(--space-lg); text-align: center; position: relative; }
-        .modal-content img { max-width: 70%; aspect-ratio: 1/1; object-fit: cover; border: 1px solid var(--border-color); margin: 0 auto var(--space-md); display: block; }
+        /* Tooltip footer */
+        .footer-tooltip-link {
+            position: relative; display: inline-block;
+            color: var(--footer-text); text-decoration: none;
+            opacity: 0.7; transition: opacity 0.3s;
+        }
+        .footer-tooltip-link:hover { opacity: 1; }
+        .footer-tooltip {
+            visibility: hidden; opacity: 0;
+            position: absolute; bottom: calc(100% + 12px); left: 0;
+            background: #1e1e1e; color: #f0eee9;
+            border: 1px solid #333;
+            padding: 1.1rem 1.3rem;
+            width: 300px; font-size: 0.78rem; line-height: 1.7;
+            letter-spacing: 0.2px; font-weight: 300;
+            pointer-events: none; z-index: 500;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            transform: translateY(8px);
+        }
+        .footer-tooltip::after {
+            content: '';
+            position: absolute; top: 100%; left: 20px;
+            border: 6px solid transparent;
+            border-top-color: #1e1e1e;
+        }
+        .footer-tooltip-link:hover .footer-tooltip {
+            visibility: visible; opacity: 1; transform: translateY(0);
+        }
+
+        .footer-bottom { text-align: center; border-top: 1px solid #333; padding-top: var(--space-md); color: #666; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; }
+        .footer-newsletter input { width: 100%; padding: 1rem 0; margin-bottom: 1rem; border: none; border-bottom: 1px solid #333; background: transparent; color: #fff; font-family: var(--font-body); outline: none; }
+        .footer-newsletter button { width: 100%; padding: 1rem; background-color: #fff; color: #000; border: none; text-transform: uppercase; letter-spacing: 2px; font-size: 0.8rem; cursor: pointer; }
+
+        /* ===== MODALE ===== */
+        dialog {
+            margin: auto; border: 1px solid var(--border-color);
+            background-color: var(--bg-color); color: var(--text-color);
+            max-width: 640px; width: 92%; padding: 0;
+        }
+        dialog::backdrop { background: rgba(0,0,0,0.4); backdrop-filter: blur(8px); }
+        .modal-content { padding: 3rem 2.5rem; text-align: center; position: relative; overflow-y: auto; max-height: 90vh; }
+        .modal-content img {
+            max-width: 62%; aspect-ratio: 1/1; object-fit: cover;
+            border: 1px solid var(--border-color); margin: 0 auto var(--space-md); display: block;
+        }
         .close-modal { position: absolute; top: 15px; right: 15px; background: transparent; border: none; font-size: 2rem; font-weight: 300; color: var(--text-color); line-height: 1; }
 
-        #toast-container { position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 10px; z-index: 1000; }
-        .toast { background-color: var(--text-color); color: var(--bg-color); padding: 1rem 2rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; animation: slideIn 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), fadeOut 0.4s ease 2.6s forwards; }
-        @keyframes slideIn { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-        @keyframes fadeOut { to { opacity: 0; visibility: hidden; } }
+        /* Bottone Dettagli e pannello */
+        .modal-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 0; }
+        .btn-details {
+            background: transparent; color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 1rem 2rem; font-size: 0.8rem;
+            text-transform: uppercase; letter-spacing: 2px;
+            transition: var(--transition);
+        }
+        .btn-details:hover { border-color: var(--text-color); }
+        .btn-details.active { background: var(--hero-bg); border-color: var(--text-color); }
 
-        /* === MEDIA QUERIES === */
+        .details-panel {
+            max-height: 0; overflow: hidden;
+            transition: max-height 0.55s cubic-bezier(0.16,1,0.3,1), opacity 0.4s ease;
+            opacity: 0;
+            text-align: left;
+            border-top: 1px solid var(--border-color);
+            margin-top: 1.8rem;
+        }
+        .details-panel.open { max-height: 500px; opacity: 1; }
+        .details-inner { padding: 1.6rem 0 0.5rem; }
+        .details-inner h4 {
+            font-family: var(--font-headings); font-style: italic;
+            font-size: 1.1rem; margin-bottom: 0.7rem; color: var(--primary-color);
+        }
+        .details-inner p { font-size: 0.87rem; line-height: 1.8; color: var(--secondary-color); }
+        .detail-facts {
+            display: flex; flex-wrap: wrap; gap: 1.5rem 2.5rem; margin-top: 1.2rem;
+            font-size: 0.72rem; text-transform: uppercase; letter-spacing: 1px;
+            color: var(--secondary-color);
+        }
+        .detail-facts span { color: var(--text-color); font-weight: 500; display: block; margin-top: 3px; font-family: var(--font-body); font-size: 0.85rem; text-transform: none; }
+
+        /* ===== TOAST ===== */
+        #toast-container { position: fixed; bottom: 30px; right: 30px; display: flex; flex-direction: column; gap: 10px; z-index: 1000; }
+        .toast { background-color: var(--text-color); color: var(--bg-color); padding: 1rem 2rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1px; animation: slideIn 0.4s cubic-bezier(0.25,0.46,0.45,0.94), fadeOut 0.4s ease 2.6s forwards; }
+
+        /* ===== RESPONSIVE ===== */
         @media (min-width: 768px) {
-            .hamburger { display: none; }
-            nav ul { display: flex; flex-direction: row; position: static; background: none; border: none; padding: 0; }
-            nav button.nav-link { width: auto; font-size: 0.8rem; padding: 0; }
-            nav button.nav-link { position: relative; }
-            nav button.nav-link::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 1px; background-color: var(--text-color); transition: width 0.3s ease; }
-            nav button.nav-link:hover::after { width: 100%; }
+            .hamburger { display: none !important; }
+            .nav-left  { display: flex !important; }
+            .nav-right { display: flex !important; }
             .controls { grid-template-columns: repeat(5, 1fr); align-items: end; gap: var(--space-lg); }
             .grid { grid-template-columns: repeat(2, 1fr); gap: 4rem 2rem; }
             .footer-grid { grid-template-columns: repeat(4, 1fr); }
             .card-actions { opacity: 0; transform: translateY(10px); transition: all 0.3s ease; }
             .card:hover .card-actions { opacity: 1; transform: translateY(0); }
         }
+        @media (max-width: 767px) {
+            .nav-left, .nav-right { display: none; }
+            .hamburger { display: flex !important; }
+            .nav-container { grid-template-columns: 1fr auto; }
+            .logo { text-align: left; }
+        }
         @media (min-width: 1024px) { .grid { grid-template-columns: repeat(4, 1fr); } }
     </style>
 </head>
 <body>
 
-    <header>
-        <div class="nav-container">
-            <div class="logo">ThePopLife.</div>
-            <button class="hamburger" aria-label="Menu" aria-expanded="false" id="hamburger-btn">
-                <span></span><span></span>
+<header>
+    <div class="nav-container">
+        <!-- Sinistra -->
+        <div class="nav-left">
+            <button class="nav-link" data-target="home">Home</button>
+            <button class="nav-link" data-target="catalog">Collezione</button>
+        </div>
+
+        <!-- Centro: Logo -->
+        <div class="logo">ThePopLife.</div>
+
+        <!-- Destra -->
+        <div class="nav-right">
+            <button class="nav-link" data-target="cart">Carrello&nbsp;(<span id="cart-count">0</span>)</button>
+            <button id="theme-toggle" aria-label="Cambia tema">
+                <!-- Sole -->
+                <svg class="theme-icon icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="4"/>
+                    <line x1="12" y1="2" x2="12" y2="4.5"/>
+                    <line x1="12" y1="19.5" x2="12" y2="22"/>
+                    <line x1="4.22" y1="4.22" x2="5.87" y2="5.87"/>
+                    <line x1="18.13" y1="18.13" x2="19.78" y2="19.78"/>
+                    <line x1="2" y1="12" x2="4.5" y2="12"/>
+                    <line x1="19.5" y1="12" x2="22" y2="12"/>
+                    <line x1="4.22" y1="19.78" x2="5.87" y2="18.13"/>
+                    <line x1="18.13" y1="5.87" x2="19.78" y2="4.22"/>
+                </svg>
+                <!-- Luna -->
+                <svg class="theme-icon icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
             </button>
-            <nav>
-                <ul id="nav-menu">
-                    <li><button class="nav-link" data-target="home">Inizio</button></li>
-                    <li><button class="nav-link" data-target="catalog">Collezione</button></li>
-                    <li><button class="nav-link" data-target="cart">Borsa (<span id="cart-count">0</span>)</button></li>
-                    <li><button class="nav-link" id="theme-toggle">Scuro/Chiaro</button></li>
-                </ul>
-            </nav>
         </div>
-    </header>
 
-    <main>
-        <section id="home" class="page-section active">
-            <div class="hero">
-                <h1>Suono Puro.</h1>
-                <p>Una curata selezione di capolavori musicali. Supporti fisici per un'esperienza d'ascolto autentica e senza tempo.</p>
-                <button class="btn-primary nav-link" data-target="catalog" style="margin-top: 2rem;">Esplora la collezione</button>
-            </div>
+        <!-- Hamburger mobile -->
+        <button class="hamburger" id="hamburger-btn" aria-label="Menu">
+            <span></span><span></span>
+        </button>
+    </div>
 
-            <h2 class="section-title">Selezione della Redazione</h2>
-            <div class="grid" id="featured-grid"></div>
+    <!-- Menu mobile dropdown -->
+    <div class="mobile-nav-menu" id="mobile-nav-menu">
+        <button class="nav-link" data-target="home">Home</button>
+        <button class="nav-link" data-target="catalog">Collezione</button>
+        <button class="nav-link" data-target="cart">Carrello (<span class="cart-count-mob">0</span>)</button>
+    </div>
+</header>
 
-            <h2 class="section-title" style="margin-top: 4rem;">Prossimamente</h2>
-            <div class="grid" id="coming-soon-grid"></div>
-        </section>
-
-        <section id="catalog" class="page-section">
-            <h2 class="section-title">La Collezione</h2>
-            
-            <div class="controls">
-                <div>
-                    <input type="text" id="search" placeholder="Cerca...">
-                </div>
-                <div>
-                    <select id="filter-format">
-                        <option value="all">Tutti i formati</option>
-                        <option value="Vinile">Vinile</option>
-                        <option value="CD">Compact Disc</option>
-                        <option value="Cassetta">Cassetta</option>
-                    </select>
-                </div>
-                <div>
-                    <select id="filter-genre">
-                        <option value="all">Tutti i generi</option>
-                        <option value="Rock">Rock</option>
-                        <option value="Pop">Pop</option>
-                        <option value="Electronic">Electronic</option>
-                        <option value="Jazz">Jazz</option>
-                        <option value="Hip Hop">Hip Hop</option>
-                        <option value="R&B">R&B</option>
-                        <option value="Soul">Soul</option>
-                        <option value="Indie">Indie</option>
-                    </select>
-                </div>
-                <div>
-                    <select id="sort">
-                        <option value="name-asc">Alfabetico (A-Z)</option>
-                        <option value="price-asc">Prezzo (Min-Max)</option>
-                        <option value="price-desc">Prezzo (Max-Min)</option>
-                    </select>
-                </div>
-                <button id="reset-filters" class="btn-secondary" style="padding: 0.8rem;">Azzera</button>
-            </div>
-
-            <div class="grid" id="product-grid" aria-live="polite"></div>
-
-            <div class="load-more-container">
-                <button id="load-more" class="btn-secondary">Mostra altri articoli</button>
-            </div>
-        </section>
-
-        <section id="cart" class="page-section">
-            <h2 class="section-title">Borsa della Spesa</h2>
-            <div id="cart-items" style="margin-top: var(--space-lg);"></div>
-            <div style="border-top: 1px solid var(--border-color); padding-top: var(--space-lg); margin-top: var(--space-lg); display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 2rem;">
-                <div>
-                    <span style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: var(--secondary-color);">Subtotale</span>
-                    <h3 id="cart-total" style="font-size: 2.5rem; line-height: 1;">€ 0,00</h3>
-                </div>
-                <button class="btn-primary" onclick="alert('Reindirizzamento al gateway di pagamento...')">Pagamento Sicuro</button>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <div class="footer-grid">
-            <div class="footer-col">
-                <h4 style="font-family: var(--font-headings); font-size: 1.5rem; text-transform: none; color: #fff; font-style: italic;">ThePopLife.</h4>
-                <p style="opacity: 0.6; margin-top: 1rem; line-height: 1.8;">Eleviamo l'esperienza musicale ridando valore al supporto fisico. Estetica e suono in perfetta armonia.</p>
-            </div>
-            <div class="footer-col">
-                <h4>Assistenza</h4>
-                <ul>
-                    <li><a href="#">Contatti</a></li>
-                    <li><a href="#">Spedizioni</a></li>
-                    <li><a href="#">Resi e Rimborsi</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Legale</h4>
-                <ul>
-                    <li><a href="#">Termini e Condizioni</a></li>
-                    <li><a href="#">Informativa Privacy</a></li>
-                    <li><a href="#">Gestione Cookie</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Newsletter</h4>
-                <form id="newsletter-form" class="footer-newsletter">
-                    <input type="email" id="footer-email" placeholder="Indirizzo Email" required>
-                    <button type="submit">Iscriviti</button>
-                </form>
-            </div>
+<main>
+    <!-- HOME -->
+    <section id="home" class="page-section active">
+        <div class="hero">
+            <h1>Élite Sound.</h1>
+            <p>Una curata selezione di capolavori musicali. Supporti fisici per un'esperienza d'ascolto autentica e senza tempo.</p>
+            <button class="btn-primary nav-link" data-target="catalog" style="margin-top: 2rem;">Esplora la collezione</button>
         </div>
-        <div class="footer-bottom">
-            &copy; 2026 ThePopLife Boutique. Tutti i diritti riservati.
+        <h2 class="section-title">Selezione della Redazione</h2>
+        <div class="grid" id="featured-grid"></div>
+        <h2 class="section-title" style="margin-top: 4rem;">Prossimamente</h2>
+        <div class="grid" id="coming-soon-grid"></div>
+    </section>
+
+    <!-- CATALOGO -->
+    <section id="catalog" class="page-section">
+        <h2 class="section-title">La Collezione</h2>
+        <div class="controls">
+            <div><input type="text" id="search" placeholder="Cerca..."></div>
+            <div>
+                <select id="filter-format">
+                    <option value="all">Tutti i formati</option>
+                    <option value="Vinile">Vinile</option>
+                    <option value="CD">Compact Disc</option>
+                    <option value="Cassetta">Cassetta</option>
+                </select>
+            </div>
+            <div>
+                <select id="filter-genre">
+                    <option value="all">Tutti i generi</option>
+                    <option value="Rock">Rock</option>
+                    <option value="Pop">Pop</option>
+                    <option value="Electronic">Electronic</option>
+                    <option value="Jazz">Jazz</option>
+                    <option value="Hip Hop">Hip Hop</option>
+                    <option value="R&B">R&B</option>
+                    <option value="Soul">Soul</option>
+                    <option value="Indie">Indie</option>
+                </select>
+            </div>
+            <div>
+                <select id="sort">
+                    <option value="name-asc">Alfabetico (A-Z)</option>
+                    <option value="price-asc">Prezzo (Min-Max)</option>
+                    <option value="price-desc">Prezzo (Max-Min)</option>
+                </select>
+            </div>
+            <button id="reset-filters" class="btn-secondary" style="padding: 0.8rem;">Azzera</button>
         </div>
-    </footer>
+        <div class="grid" id="product-grid" aria-live="polite"></div>
+        <div class="load-more-container">
+            <button id="load-more" class="btn-secondary">Mostra altri articoli</button>
+        </div>
+    </section>
 
-    <dialog id="product-modal">
-        <button class="close-modal">&times;</button>
-        <div class="modal-content" id="modal-content"></div>
-    </dialog>
+    <!-- CARRELLO -->
+    <section id="cart" class="page-section">
+        <h2 class="section-title">Carrello</h2>
+        <div id="cart-items" style="margin-top: var(--space-lg);"></div>
+        <div style="border-top: 1px solid var(--border-color); padding-top: var(--space-lg); margin-top: var(--space-lg); display: flex; justify-content: space-between; align-items: flex-end; flex-wrap: wrap; gap: 2rem;">
+            <div>
+                <span style="font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px; color: var(--secondary-color);">Subtotale</span>
+                <h3 id="cart-total" style="font-size: 2.5rem; line-height: 1;">€ 0,00</h3>
+            </div>
+            <button class="btn-primary" onclick="alert('Reindirizzamento al gateway di pagamento...')">Pagamento Sicuro</button>
+        </div>
+    </section>
+</main>
 
-    <div id="toast-container" aria-live="polite"></div>
+<footer>
+    <div class="footer-grid">
+        <div class="footer-col">
+            <h4 style="font-family: var(--font-headings); font-size: 1.5rem; text-transform: none; color: #fff; font-style: italic;">ThePopLife.</h4>
+            <p style="opacity: 0.6; margin-top: 1rem; line-height: 1.8;">Eleviamo l'esperienza musicale ridando valore al supporto fisico. Estetica e suono in perfetta armonia.</p>
+        </div>
 
-    <script>
-        // Immagini di fallback musicali da Unsplash (libere da copyright)
-        const musicFallbacks = [
-            "https://images.unsplash.com/photo-1511735111819-9a3f7709049c?w=600&q=80",
-            "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80",
-            "https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=600&q=80",
-            "https://images.unsplash.com/photo-1461360370896-922624d12aa1?w=600&q=80",
-            "https://images.unsplash.com/photo-1487180144351-b8472da7d491?w=600&q=80",
-        ];
+        <div class="footer-col">
+            <h4>Assistenza</h4>
+            <ul>
+                <li>
+                    <a href="#" class="footer-tooltip-link">Contatti
+                        <span class="footer-tooltip">Scrivici all'indirizzo <strong>support@thepoplife.it</strong> oppure contattaci telefonicamente al <strong>02 1234567</strong>, dal lunedì al venerdì dalle 9:00 alle 18:00. Il nostro team risponde entro 24 ore lavorative.</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="footer-tooltip-link">Spedizioni
+                        <span class="footer-tooltip">Consegna in Italia in 2–4 giorni lavorativi tramite corriere espresso tracciato. Spedizioni internazionali verso tutta Europa in 5–8 giorni. Spedizione gratuita per ordini superiori a <strong>€60,00</strong>. Ogni pacco include numero di tracciamento via email.</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="footer-tooltip-link">Resi e Rimborsi
+                        <span class="footer-tooltip">Hai diritto di recesso entro <strong>14 giorni</strong> dalla ricezione dell'ordine, senza necessità di fornire motivazione. Il prodotto deve essere integro e nella sua confezione originale. Il rimborso viene erogato entro 5 giorni lavorativi dall'approvazione del reso.</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
 
-        // Helper: se l'immagine Wikipedia fallisce, usa un'immagine musicale
-        function imgWithFallback(src, fallbackIndex = 0) {
-            return `onerror="this.onerror=null;this.src='${musicFallbacks[fallbackIndex % musicFallbacks.length]}'"`;
-        }
+        <div class="footer-col">
+            <h4>Legale</h4>
+            <ul>
+                <li>
+                    <a href="#" class="footer-tooltip-link">Termini e Condizioni
+                        <span class="footer-tooltip">Utilizzando ThePopLife accetti integralmente i presenti Termini. I prezzi sono in Euro, IVA inclusa. Ci riserviamo il diritto di modificare il catalogo senza preavviso. Le controversie saranno regolate dalla legge italiana, con foro esclusivo di <strong>Milano</strong>.</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="footer-tooltip-link">Informativa Privacy
+                        <span class="footer-tooltip">I dati personali sono trattati nel rispetto del <strong>GDPR UE 2016/679</strong>. Vengono raccolti esclusivamente per la gestione degli ordini e, previo consenso, per comunicazioni promozionali. Non vengono mai ceduti a terzi. Puoi richiedere la cancellazione scrivendo a <strong>privacy@thepoplife.it</strong>.</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="#" class="footer-tooltip-link">Gestione Cookie
+                        <span class="footer-tooltip">Utilizziamo <strong>cookie tecnici</strong> indispensabili al funzionamento del sito e, previo consenso, cookie analitici anonimi per migliorare l'esperienza di navigazione. Nessun cookie di profilazione di terze parti viene attivato senza il tuo esplicito consenso. Puoi modificare le preferenze in qualsiasi momento.</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
 
-        const allProducts = [
-            // === IN VENDITA ===
-            { id: 1,  title: "Blonde", artist: "Frank Ocean", price: 45.00, category: "Vinile", genre: "R&B", featured: true,  upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/a/a0/Blonde_-_Frank_Ocean.jpeg", fb: 0 },
-            { id: 2,  title: "The Dark Side of the Moon", artist: "Pink Floyd", price: 35.90, category: "Vinile", genre: "Rock", featured: true, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/3/3b/Dark_Side_of_the_Moon.png", fb: 1 },
-            { id: 3,  title: "Random Access Memories", artist: "Daft Punk", price: 28.50, category: "CD", genre: "Electronic", featured: true, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/a/a7/Random_Access_Memories.jpg", fb: 2 },
-            { id: 4,  title: "Kind of Blue", artist: "Miles Davis", price: 25.00, category: "Vinile", genre: "Jazz", featured: true, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/9/9c/MilesDavisKindofBlue.jpg", fb: 3 },
-            { id: 5,  title: "To Pimp a Butterfly", artist: "Kendrick Lamar", price: 34.50, category: "Vinile", genre: "Hip Hop", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/f/f6/Kendrick_Lamar_-_To_Pimp_a_Butterfly.png", fb: 4 },
-            { id: 6,  title: "Abbey Road", artist: "The Beatles", price: 32.00, category: "Vinile", genre: "Rock", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/4/42/Beatles_-_Abbey_Road.jpg", fb: 0 },
-            { id: 7,  title: "Nevermind", artist: "Nirvana", price: 18.90, category: "CD", genre: "Rock", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/b/b7/NirvanaNevermindalbumcover.jpg", fb: 1 },
-            { id: 8,  title: "AM", artist: "Arctic Monkeys", price: 22.00, category: "CD", genre: "Rock", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/0/04/Arctic_Monkeys_-_AM.png", fb: 2 },
-            { id: 9,  title: "Thriller", artist: "Michael Jackson", price: 29.99, category: "Vinile", genre: "Pop", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/5/55/Michael_Jackson_-_Thriller.png", fb: 3 },
-            { id: 10, title: "Currents", artist: "Tame Impala", price: 30.00, category: "Vinile", genre: "Electronic", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/9/9b/Tame_Impala_-_Currents.png", fb: 4 },
-            { id: 11, title: "Rumours", artist: "Fleetwood Mac", price: 27.50, category: "Vinile", genre: "Rock", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/f/f1/Fleetwood_Mac_-_Rumours.png", fb: 0 },
-            { id: 12, title: "Back to Black", artist: "Amy Winehouse", price: 26.00, category: "Vinile", genre: "Soul", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/6/60/Amy_Winehouse_-_Back_to_Black_%28album%29.png", fb: 1 },
-            { id: 13, title: "Sgt. Pepper's Lonely Hearts Club Band", artist: "The Beatles", price: 33.00, category: "Vinile", genre: "Rock", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/5/50/Sgt._Pepper%27s_Lonely_Hearts_Club_Band.jpg", fb: 2 },
-            { id: 14, title: "OK Computer", artist: "Radiohead", price: 31.00, category: "Vinile", genre: "Rock", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/b/ba/Radioheadokcomputer.png", fb: 3 },
-            { id: 15, title: "Innervisions", artist: "Stevie Wonder", price: 29.00, category: "Vinile", genre: "Soul", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/3/3c/Innervisions.jpg", fb: 4 },
-            { id: 16, title: "Discovery", artist: "Daft Punk", price: 24.00, category: "CD", genre: "Electronic", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/c/c0/Daft_Punk_-_Discovery.png", fb: 0 },
-            { id: 17, title: "What's Going On", artist: "Marvin Gaye", price: 27.00, category: "Vinile", genre: "Soul", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/e/e9/MarvinGayeWhat%27sGoingOnalbumcover.jpg", fb: 1 },
-            { id: 18, title: "Portishead", artist: "Portishead", price: 23.50, category: "CD", genre: "Electronic", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/a/aa/Portishead_-_Portishead.png", fb: 2 },
-            { id: 19, title: "Carrie & Lowell", artist: "Sufjan Stevens", price: 26.50, category: "Vinile", genre: "Indie", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/0/0c/Sufjan_Stevens_-_Carrie_%26_Lowell.png", fb: 3 },
-            { id: 20, title: "Loveless", artist: "My Bloody Valentine", price: 32.50, category: "Vinile", genre: "Indie", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/0/0c/My_Bloody_Valentine_-_Loveless.png", fb: 4 },
-            { id: 21, title: "Born to Run", artist: "Bruce Springsteen", price: 28.00, category: "Vinile", genre: "Rock", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/6/6e/Born_to_run_album.jpg", fb: 0 },
-            { id: 22, title: "Graceland", artist: "Paul Simon", price: 21.00, category: "CD", genre: "Pop", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/e/e5/Paul_Simon_-_Graceland.jpg", fb: 1 },
-            { id: 23, title: "Vespertine", artist: "Björk", price: 30.00, category: "Vinile", genre: "Electronic", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/2/28/Bjork_vespertine.jpg", fb: 2 },
-            { id: 24, title: "Purple Rain", artist: "Prince", price: 29.00, category: "Vinile", genre: "Pop", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/9/9a/Purplerain.png", fb: 3 },
-            { id: 25, title: "Homogenic", artist: "Björk", price: 31.00, category: "Cassetta", genre: "Electronic", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/0/00/Bj%C3%B6rk_-_Homogenic.png", fb: 4 },
-            { id: 26, title: "The Miseducation of Lauryn Hill", artist: "Lauryn Hill", price: 33.50, category: "Vinile", genre: "R&B", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/a/a0/Lauryn_Hill_-_The_Miseducation_of_Lauryn_Hill.png", fb: 0 },
-            { id: 27, title: "Kid A", artist: "Radiohead", price: 29.50, category: "Vinile", genre: "Rock", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/b/b5/Radiohead_-_Kid_A.png", fb: 1 },
-            { id: 28, title: "Tapestry", artist: "Carole King", price: 20.00, category: "CD", genre: "Pop", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/a/a3/CaroleKingTapestryalbum.jpg", fb: 2 },
+        <div class="footer-col">
+            <h4>Newsletter</h4>
+            <form id="newsletter-form" class="footer-newsletter">
+                <input type="email" id="footer-email" placeholder="Indirizzo Email" required>
+                <button type="submit">Iscriviti</button>
+            </form>
+        </div>
+    </div>
+    <div class="footer-bottom">
+        &copy; 2026 ThePopLife Boutique. Tutti i diritti riservati.
+    </div>
+</footer>
 
-            // === PROSSIMAMENTE ===
-            { id: 29, title: "1989 (Taylor's Version)", artist: "Taylor Swift", price: 38.00, category: "Vinile", genre: "Pop", featured: false, upcoming: true, img: "https://upload.wikimedia.org/wikipedia/en/d/d5/Taylor_Swift_-_1989_%28Taylor%27s_Version%29.png", fb: 3 },
-            { id: 30, title: "Hit Me Hard and Soft", artist: "Billie Eilish", price: 33.00, category: "Vinile", genre: "Pop", featured: false, upcoming: true, img: "https://upload.wikimedia.org/wikipedia/en/3/36/Billie_Eilish_-_Hit_Me_Hard_and_Soft.png", fb: 4 },
-            { id: 31, title: "GNX", artist: "Kendrick Lamar", price: 36.00, category: "Vinile", genre: "Hip Hop", featured: false, upcoming: true, img: "https://upload.wikimedia.org/wikipedia/en/3/3c/Kendrick_Lamar_-_GNX.png", fb: 0 },
-            { id: 32, title: "Chromakopia", artist: "Tyler, the Creator", price: 35.00, category: "Vinile", genre: "Hip Hop", featured: false, upcoming: true, img: "https://upload.wikimedia.org/wikipedia/en/d/da/Tyler%2C_the_Creator_-_Chromakopia.png", fb: 1 },
-        ];
+<dialog id="product-modal">
+    <button class="close-modal">&times;</button>
+    <div class="modal-content" id="modal-content"></div>
+</dialog>
+<div id="toast-container" aria-live="polite"></div>
 
-        let state = {
-            products: allProducts.filter(p => !p.upcoming),
-            cart: JSON.parse(localStorage.getItem('thepoplife_cart')) || [],
-            theme: localStorage.getItem('thepoplife_theme') || 'light',
-            currentPage: 1,
-            itemsPerPage: 8,
-            filters: { search: '', format: 'all', genre: 'all', sort: 'name-asc' }
-        };
+<script>
+    // ===== DESCRIZIONI ALBUM =====
+    const albumDetails = {
+        1:  { year: 2016, label: "Boys Don't Cry", desc: "Album visivo di Frank Ocean, uscito dopo anni di attesa. Un'opera intima e frammentata che esplora amore, identità e nostalgia attraverso arrangiamenti minimalisti e testi di rara bellezza poetica." },
+        2:  { year: 1973, label: "Harvest", desc: "Il capolavoro progressive dei Pink Floyd, incentrato su avidità, tempo e follia. La copertina con il prisma è uno dei simboli più riconoscibili della storia della musica contemporanea." },
+        3:  { year: 2013, label: "Columbia", desc: "Il grande ritorno dei Daft Punk: un omaggio suntuoso agli anni '70 e '80 registrato con musicisti in studio, collaborazioni d'eccezione e una produzione senza pari nella musica elettronica moderna." },
+        4:  { year: 1959, label: "Columbia", desc: "Registrato in una sola sessione, Kind of Blue è il disco jazz più venduto di sempre. Miles Davis ridefinì il genere con il modal jazz, creando spazio per meditazione e improvvisazione assoluta." },
+        5:  { year: 2015, label: "Top Dawg / Aftermath", desc: "Un affresco del disagio afroamericano, che intreccia jazz, spoken word e funk. Kendrick Lamar costruisce un'epopea politica e personale di straordinaria profondità artistica, oggi considerata un caposaldo del rap." },
+        6:  { year: 1969, label: "Apple Records", desc: "L'ultimo album registrato insieme dai Beatles, con la celeberrima copertina sulle strisce pedonali di Abbey Road. Un congedo dolceamaro dalla band che aveva cambiato per sempre la storia del pop mondiale." },
+        7:  { year: 1991, label: "DGC Records", desc: "Il disco che consacrò il grunge nell'immaginario collettivo. Kurt Cobain firmò dieci canzoni imbevute di angoscia e ironia, con Smells Like Teen Spirit come detonatore di un'intera generazione." },
+        8:  { year: 2013, label: "Domino", desc: "Il quinto album degli Arctic Monkeys è un viaggio nel rock notturno e cinematografico. Alex Turner scrive con lirismo tagliente su amore, fama e solitudine, su arrangiamenti ossessivi e sensuali." },
+        9:  { year: 1982, label: "Epic Records", desc: "L'album più venduto di tutti i tempi con oltre 70 milioni di copie. Michael Jackson e Quincy Jones crearono un universo pop imbattibile, da Billie Jean a Beat It fino alla title track con Vincent Price." },
+        10: { year: 2015, label: "Interscope", desc: "Kevin Parker trasforma il rock psichedelico in una meditazione elettronica sulla crescita e la perdita. Currents suona come la colonna sonora di un cambiamento interiore inevitabile e malinconico." },
+        11: { year: 1977, label: "Warner Bros.", desc: "Registrato in un clima di tensioni interne alla band, Rumours è paradossalmente il loro lavoro più armonioso. Undici canzoni perfette su rotture e ricomposizioni, diventate standard senza tempo." },
+        12: { year: 2006, label: "Island Records", desc: "Amy Winehouse fonde soul britannico, jazz anni '60 e R&B contemporaneo in un disco brutalmente onesto. Back to Black racconta dipendenza e amore tossico con una voce che non si dimentica mai." },
+        13: { year: 1967, label: "Parlophone", desc: "Il disco che rivoluzionò il concetto di album come opera d'arte totale. I Beatles inventarono un'estetica psichedelica e un'esplorazione sonora che, a distanza di decenni, resta ancora insuperata." },
+        14: { year: 1997, label: "Parlophone", desc: "OK Computer fotografa l'alienazione tecnologica di fine millennio con lucidità visionaria. Radiohead costruisce soundscape di ansia e bellezza che hanno anticipato con precisione il mondo in cui viviamo." },
+        15: { year: 1973, label: "Tamla / Motown", desc: "Stevie Wonder al culmine dei suoi poteri creativi: funk, soul e jazz che parlano di coscienza sociale, spiritualità e vita urbana. Aprì la stagione d'oro della carriera di Wonder negli anni '70." },
+        16: { year: 2001, label: "Virgin", desc: "I Daft Punk passano dal clubbing al pop cosmico. Discovery è un omaggio al synth-pop e al funk francese degli anni '80, con One More Time e Harder Better Faster Stronger entrate nella cultura globale." },
+        17: { year: 1971, label: "Tamla / Motown", desc: "Un concept album sulla guerra del Vietnam e la crisi urbana americana. Marvin Gaye trasformò la propria sofferenza in un documento di denuncia ancora straziante e di radicale attualità." },
+        18: { year: 1997, label: "Go! Beat", desc: "Portishead al loro apice: orchestrazioni cinematografiche, scratch inquietanti e la voce di Beth Gibbons sospesa tra angoscia e bellezza. Un disco trip-hop che ha ridefinito l'oscurità romantica." },
+        19: { year: 2015, label: "Asthmatic Kitty", desc: "Un lutto trasformato in poesia musicale. Sufjan Stevens rivolge dieci canzoni alla madre scomparsa con arrangiamenti rarefatti e testi di una sincerità quasi insostenibile da ascoltare." },
+        20: { year: 1991, label: "Creation Records", desc: "Il capolavoro shoegaze dei My Bloody Valentine, costruito con mesi di overdub e un muro del suono che nessuno ha mai riprodotto. Loveless è un'esperienza fisica oltre che strettamente musicale." },
+        21: { year: 1975, label: "Columbia", desc: "Il disco che consacrò Springsteen come 'il futuro del rock and roll'. Born to Run è un'epopea americana di fuga e riscatto, con un'energia romantica e disperata inarrivabile." },
+        22: { year: 1986, label: "Warner Bros.", desc: "Paul Simon incontra la musica mbaqanga sudafricana in un viaggio che ha cambiato la world music. Graceland è solare e malinconico, ricco di ritmo e canzoni di rara bellezza melodica." },
+        23: { year: 2001, label: "One Little Indian", desc: "Björk costruisce un'isola sonora di intimità e fragilità. Vespertine è il suo disco più sussurrato: beat fatti di ghiaccio e arpa, canti da camera e una produzione che sembra fatta di respiro." },
+        24: { year: 1984, label: "Warner Bros.", desc: "La colonna sonora del film che ha trasformato Prince in un fenomeno globale. Purple Rain è rock, soul e funk fusi in un'emozione travolgente, con la title track tra le più grandi ballad rock di sempre." },
+        25: { year: 1997, label: "One Little Indian", desc: "Il disco più sperimentale e politico di Björk: elettronica industriale, archi d'avanguardia e la sua voce come strumento cosmico. Homogenic parla di Islanda, identità e sopravvivenza emotiva." },
+        26: { year: 1998, label: "Ruffhouse / Columbia", desc: "Uno dei debutti più influenti del hip hop e dell'R&B. Lauryn Hill intreccia rap, soul e reggae con testi sull'autostima e la spiritualità, vincendo cinque Grammy nella stessa notte." },
+        27: { year: 2000, label: "Parlophone / Capitol", desc: "Con Kid A i Radiohead abbandonano le chitarre per un territorio di elettronica, jazz atonale e ambient. Un disco che divide i fan e anticipa il suono dell'intero decennio successivo." },
+        28: { year: 1971, label: "Ode Records", desc: "Carole King si racconta in prima persona in uno dei cantautorati più intimi della storia. Tapestry rimase in classifica per anni con hit come It's Too Late e I Feel the Earth Move." },
+        29: { year: 2023, label: "Republic Records", desc: "La versione ri-registrata da Taylor Swift del suo album del 2014: pop patinato e brillante, con testi revisionati e quattro nuove tracce From the Vault. Una dichiarazione di indipendenza artistica." },
+        30: { year: 2024, label: "Darkroom / Interscope", desc: "Il terzo album di Billie Eilish è il suo lavoro più maturo: ballad cinematografiche e pop da camera scritte con il fratello Finneas, che esplorano vulnerabilità e crescita con eleganza disarmante." },
+        31: { year: 2024, label: "pgLang / Interscope", desc: "GNX è il sesto album di Kendrick Lamar, pubblicato a sorpresa dopo la faida con Drake. Ritmi West Coast, produzioni Mustard e liriche affilate su potere, eredità e identità nera in America." },
+        32: { year: 2024, label: "Columbia", desc: "Tyler, the Creator si reinventa ancora: Chromakopia mescola afrobeat, jazz e hip hop sperimentale in un concept album sulla mascolinità nera e il peso delle aspettative esterne." },
+    };
 
-        document.addEventListener('DOMContentLoaded', () => {
-            initTheme(); updateCartUI(); renderHomeSections(); applyFiltersAndRender();
+    const musicFallbacks = [
+        "https://images.unsplash.com/photo-1511735111819-9a3f7709049c?w=600&q=80",
+        "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=600&q=80",
+        "https://images.unsplash.com/photo-1520523839897-bd0b52f945a0?w=600&q=80",
+        "https://images.unsplash.com/photo-1461360370896-922624d12aa1?w=600&q=80",
+        "https://images.unsplash.com/photo-1487180144351-b8472da7d491?w=600&q=80",
+    ];
+
+    const allProducts = [
+        { id: 1,  title: "Blonde", artist: "Frank Ocean", price: 45.00, category: "Vinile", genre: "R&B", featured: true,  upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/a/a0/Blonde_-_Frank_Ocean.jpeg", fb: 0 },
+        { id: 2,  title: "The Dark Side of the Moon", artist: "Pink Floyd", price: 35.90, category: "Vinile", genre: "Rock", featured: true, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/3/3b/Dark_Side_of_the_Moon.png", fb: 1 },
+        { id: 3,  title: "Random Access Memories", artist: "Daft Punk", price: 28.50, category: "CD", genre: "Electronic", featured: true, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/a/a7/Random_Access_Memories.jpg", fb: 2 },
+        { id: 4,  title: "Kind of Blue", artist: "Miles Davis", price: 25.00, category: "Vinile", genre: "Jazz", featured: true, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/9/9c/MilesDavisKindofBlue.jpg", fb: 3 },
+        { id: 5,  title: "To Pimp a Butterfly", artist: "Kendrick Lamar", price: 34.50, category: "Vinile", genre: "Hip Hop", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/f/f6/Kendrick_Lamar_-_To_Pimp_a_Butterfly.png", fb: 4 },
+        { id: 6,  title: "Abbey Road", artist: "The Beatles", price: 32.00, category: "Vinile", genre: "Rock", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/4/42/Beatles_-_Abbey_Road.jpg", fb: 0 },
+        { id: 7,  title: "Nevermind", artist: "Nirvana", price: 18.90, category: "CD", genre: "Rock", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/b/b7/NirvanaNevermindalbumcover.jpg", fb: 1 },
+        { id: 8,  title: "AM", artist: "Arctic Monkeys", price: 22.00, category: "CD", genre: "Rock", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/0/04/Arctic_Monkeys_-_AM.png", fb: 2 },
+        { id: 9,  title: "Thriller", artist: "Michael Jackson", price: 29.99, category: "Vinile", genre: "Pop", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/5/55/Michael_Jackson_-_Thriller.png", fb: 3 },
+        { id: 10, title: "Currents", artist: "Tame Impala", price: 30.00, category: "Vinile", genre: "Electronic", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/9/9b/Tame_Impala_-_Currents.png", fb: 4 },
+        { id: 11, title: "Rumours", artist: "Fleetwood Mac", price: 27.50, category: "Vinile", genre: "Rock", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/f/f1/Fleetwood_Mac_-_Rumours.png", fb: 0 },
+        { id: 12, title: "Back to Black", artist: "Amy Winehouse", price: 26.00, category: "Vinile", genre: "Soul", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/6/60/Amy_Winehouse_-_Back_to_Black_%28album%29.png", fb: 1 },
+        { id: 13, title: "Sgt. Pepper's Lonely Hearts Club Band", artist: "The Beatles", price: 33.00, category: "Vinile", genre: "Rock", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/5/50/Sgt._Pepper%27s_Lonely_Hearts_Club_Band.jpg", fb: 2 },
+        { id: 14, title: "OK Computer", artist: "Radiohead", price: 31.00, category: "Vinile", genre: "Rock", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/b/ba/Radioheadokcomputer.png", fb: 3 },
+        { id: 15, title: "Innervisions", artist: "Stevie Wonder", price: 29.00, category: "Vinile", genre: "Soul", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/3/3c/Innervisions.jpg", fb: 4 },
+        { id: 16, title: "Discovery", artist: "Daft Punk", price: 24.00, category: "CD", genre: "Electronic", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/c/c0/Daft_Punk_-_Discovery.png", fb: 0 },
+        { id: 17, title: "What's Going On", artist: "Marvin Gaye", price: 27.00, category: "Vinile", genre: "Soul", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/e/e9/MarvinGayeWhat%27sGoingOnalbumcover.jpg", fb: 1 },
+        { id: 18, title: "Portishead", artist: "Portishead", price: 23.50, category: "CD", genre: "Electronic", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/a/aa/Portishead_-_Portishead.png", fb: 2 },
+        { id: 19, title: "Carrie & Lowell", artist: "Sufjan Stevens", price: 26.50, category: "Vinile", genre: "Indie", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/0/0c/Sufjan_Stevens_-_Carrie_%26_Lowell.png", fb: 3 },
+        { id: 20, title: "Loveless", artist: "My Bloody Valentine", price: 32.50, category: "Vinile", genre: "Indie", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/0/0c/My_Bloody_Valentine_-_Loveless.png", fb: 4 },
+        { id: 21, title: "Born to Run", artist: "Bruce Springsteen", price: 28.00, category: "Vinile", genre: "Rock", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/6/6e/Born_to_run_album.jpg", fb: 0 },
+        { id: 22, title: "Graceland", artist: "Paul Simon", price: 21.00, category: "CD", genre: "Pop", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/e/e5/Paul_Simon_-_Graceland.jpg", fb: 1 },
+        { id: 23, title: "Vespertine", artist: "Björk", price: 30.00, category: "Vinile", genre: "Electronic", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/2/28/Bjork_vespertine.jpg", fb: 2 },
+        { id: 24, title: "Purple Rain", artist: "Prince", price: 29.00, category: "Vinile", genre: "Pop", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/9/9a/Purplerain.png", fb: 3 },
+        { id: 25, title: "Homogenic", artist: "Björk", price: 31.00, category: "Cassetta", genre: "Electronic", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/0/00/Bj%C3%B6rk_-_Homogenic.png", fb: 4 },
+        { id: 26, title: "The Miseducation of Lauryn Hill", artist: "Lauryn Hill", price: 33.50, category: "Vinile", genre: "R&B", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/a/a0/Lauryn_Hill_-_The_Miseducation_of_Lauryn_Hill.png", fb: 0 },
+        { id: 27, title: "Kid A", artist: "Radiohead", price: 29.50, category: "Vinile", genre: "Rock", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/b/b5/Radiohead_-_Kid_A.png", fb: 1 },
+        { id: 28, title: "Tapestry", artist: "Carole King", price: 20.00, category: "CD", genre: "Pop", featured: false, upcoming: false, img: "https://upload.wikimedia.org/wikipedia/en/a/a3/CaroleKingTapestryalbum.jpg", fb: 2 },
+        { id: 29, title: "1989 (Taylor's Version)", artist: "Taylor Swift", price: 38.00, category: "Vinile", genre: "Pop", featured: false, upcoming: true, img: "https://upload.wikimedia.org/wikipedia/en/d/d5/Taylor_Swift_-_1989_%28Taylor%27s_Version%29.png", fb: 3 },
+        { id: 30, title: "Hit Me Hard and Soft", artist: "Billie Eilish", price: 33.00, category: "Vinile", genre: "Pop", featured: false, upcoming: true, img: "https://upload.wikimedia.org/wikipedia/en/3/36/Billie_Eilish_-_Hit_Me_Hard_and_Soft.png", fb: 4 },
+        { id: 31, title: "GNX", artist: "Kendrick Lamar", price: 36.00, category: "Vinile", genre: "Hip Hop", featured: false, upcoming: true, img: "https://upload.wikimedia.org/wikipedia/en/3/3c/Kendrick_Lamar_-_GNX.png", fb: 0 },
+        { id: 32, title: "Chromakopia", artist: "Tyler, the Creator", price: 35.00, category: "Vinile", genre: "Hip Hop", featured: false, upcoming: true, img: "https://upload.wikimedia.org/wikipedia/en/d/da/Tyler%2C_the_Creator_-_Chromakopia.png", fb: 1 },
+    ];
+
+    let state = {
+        products: allProducts.filter(p => !p.upcoming),
+        cart: JSON.parse(localStorage.getItem('thepoplife_cart')) || [],
+        theme: localStorage.getItem('thepoplife_theme') || 'light',
+        currentPage: 1, itemsPerPage: 8,
+        filters: { search: '', format: 'all', genre: 'all', sort: 'name-asc' }
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+        initTheme(); updateCartUI(); renderHomeSections(); applyFiltersAndRender();
+    });
+
+    // === NAV ===
+    const sections = document.querySelectorAll('.page-section');
+    document.querySelectorAll('.nav-link[data-target]').forEach(link => {
+        link.addEventListener('click', e => {
+            const id = e.currentTarget.getAttribute('data-target');
+            sections.forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            document.getElementById('mobile-nav-menu').classList.remove('open');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         });
+    });
+    document.getElementById('hamburger-btn').addEventListener('click', () => {
+        document.getElementById('mobile-nav-menu').classList.toggle('open');
+    });
 
-        // Navigazione
-        const hamburgerBtn = document.getElementById('hamburger-btn');
-        const navMenu = document.getElementById('nav-menu');
-        const sections = document.querySelectorAll('.page-section');
+    // === TEMA ===
+    function initTheme() { document.documentElement.setAttribute('data-theme', state.theme); }
+    document.getElementById('theme-toggle').addEventListener('click', () => {
+        state.theme = state.theme === 'light' ? 'dark' : 'light';
+        document.documentElement.setAttribute('data-theme', state.theme);
+        localStorage.setItem('thepoplife_theme', state.theme);
+    });
 
-        hamburgerBtn.addEventListener('click', () => navMenu.classList.toggle('open'));
-
-        document.querySelectorAll('.nav-link[data-target]').forEach(link => {
-            link.addEventListener('click', (e) => {
-                const targetId = e.currentTarget.getAttribute('data-target');
-                sections.forEach(sec => sec.classList.remove('active'));
-                document.getElementById(targetId).classList.add('active');
-                navMenu.classList.remove('open');
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-        });
-
-        // Tema
-        const themeToggle = document.getElementById('theme-toggle');
-        function initTheme() { document.documentElement.setAttribute('data-theme', state.theme); }
-        themeToggle.addEventListener('click', () => {
-            state.theme = state.theme === 'light' ? 'dark' : 'light';
-            document.documentElement.setAttribute('data-theme', state.theme);
-            localStorage.setItem('thepoplife_theme', state.theme);
-        });
-
-        // Componente Card
-        function createProductCard(p, isPreorder = false) {
-            const btnText = isPreorder ? "Pre-ordina" : "Aggiungi";
-            const fb = musicFallbacks[p.fb % musicFallbacks.length];
-            return `
-                <article class="card">
-                    <div class="card-img-wrapper" onclick="openModal(${p.id})" style="cursor:pointer;">
-                        <img src="${p.img}" alt="${p.title}" onerror="this.onerror=null;this.src='${fb}'">
+    // === CARD ===
+    function createProductCard(p, isPreorder = false) {
+        const btnText = isPreorder ? "Pre-ordina" : "Aggiungi";
+        const fb = musicFallbacks[p.fb % musicFallbacks.length];
+        return `
+            <article class="card">
+                <div class="card-img-wrapper" onclick="openModal(${p.id})" style="cursor:pointer;">
+                    <img src="${p.img}" alt="${p.title}" onerror="this.onerror=null;this.src='${fb}'">
+                </div>
+                <div class="card-body">
+                    <div class="card-meta">${p.category} // ${p.genre}</div>
+                    <h3 class="card-title">${p.title}</h3>
+                    <p class="card-artist">${p.artist}</p>
+                    <p class="card-price">€${p.price.toFixed(2).replace('.', ',')}</p>
+                    <div class="card-actions">
+                        <button class="btn-primary" onclick="addToCart(${p.id})">${btnText}</button>
                     </div>
-                    <div class="card-body">
-                        <div class="card-meta">${p.category} // ${p.genre}</div>
-                        <h3 class="card-title">${p.title}</h3>
-                        <p class="card-artist">${p.artist}</p>
-                        <p class="card-price">€${p.price.toFixed(2).replace('.', ',')}</p>
-                        <div class="card-actions">
-                            <button class="btn-primary" onclick="addToCart(${p.id})">${btnText}</button>
-                        </div>
-                    </div>
-                </article>
-            `;
-        }
+                </div>
+            </article>`;
+    }
 
-        // Render sezioni
-        function renderHomeSections() {
-            document.getElementById('featured-grid').innerHTML = allProducts.filter(p => p.featured).map(p => createProductCard(p)).join('');
-            document.getElementById('coming-soon-grid').innerHTML = allProducts.filter(p => p.upcoming).map(p => createProductCard(p, true)).join('');
-        }
+    function renderHomeSections() {
+        document.getElementById('featured-grid').innerHTML = allProducts.filter(p => p.featured).map(p => createProductCard(p)).join('');
+        document.getElementById('coming-soon-grid').innerHTML = allProducts.filter(p => p.upcoming).map(p => createProductCard(p, true)).join('');
+    }
 
-        function applyFiltersAndRender(resetPage = true) {
-            if (resetPage) state.currentPage = 1;
-            let filtered = allProducts.filter(p => {
-                if (p.upcoming) return false;
-                const matchSearch = p.title.toLowerCase().includes(state.filters.search.toLowerCase()) || p.artist.toLowerCase().includes(state.filters.search.toLowerCase());
-                const matchFormat = state.filters.format === 'all' || p.category === state.filters.format;
-                const matchGenre = state.filters.genre === 'all' || p.genre === state.filters.genre;
-                return matchSearch && matchFormat && matchGenre;
-            });
-
-            filtered.sort((a, b) => {
-                if (state.filters.sort === 'name-asc') return a.title.localeCompare(b.title);
-                if (state.filters.sort === 'price-asc') return a.price - b.price;
-                if (state.filters.sort === 'price-desc') return b.price - a.price;
-            });
-
-            state.products = filtered;
-            renderCatalog(resetPage);
-        }
-
-        function renderCatalog(clearGrid = false) {
-            const grid = document.getElementById('product-grid');
-            const loadMoreBtn = document.getElementById('load-more');
-            if (clearGrid) grid.innerHTML = '';
-
-            const startIndex = (state.currentPage - 1) * state.itemsPerPage;
-            const endIndex = startIndex + state.itemsPerPage;
-            const paginatedItems = state.products.slice(startIndex, endIndex);
-
-            if (state.products.length === 0) {
-                grid.innerHTML = '<div style="grid-column: 1/-1; text-align:center; padding: 4rem; font-style:italic;">Nessun risultato trovato per i criteri selezionati.</div>';
-                loadMoreBtn.style.display = 'none';
-                return;
-            }
-
-            paginatedItems.forEach(p => { grid.innerHTML += createProductCard(p); });
-            loadMoreBtn.style.display = endIndex >= state.products.length ? 'none' : 'inline-block';
-        }
-
-        // Filtri
-        document.getElementById('search').addEventListener('input', (e) => { state.filters.search = e.target.value; applyFiltersAndRender(); });
-        document.getElementById('filter-format').addEventListener('change', (e) => { state.filters.format = e.target.value; applyFiltersAndRender(); });
-        document.getElementById('filter-genre').addEventListener('change', (e) => { state.filters.genre = e.target.value; applyFiltersAndRender(); });
-        document.getElementById('sort').addEventListener('change', (e) => { state.filters.sort = e.target.value; applyFiltersAndRender(); });
-        
-        document.getElementById('reset-filters').addEventListener('click', () => {
-            document.getElementById('search').value = '';
-            document.getElementById('filter-format').value = 'all';
-            document.getElementById('filter-genre').value = 'all';
-            document.getElementById('sort').value = 'name-asc';
-            state.filters = { search: '', format: 'all', genre: 'all', sort: 'name-asc' };
-            applyFiltersAndRender();
+    function applyFiltersAndRender(resetPage = true) {
+        if (resetPage) state.currentPage = 1;
+        let filtered = allProducts.filter(p => {
+            if (p.upcoming) return false;
+            const ms = p.title.toLowerCase().includes(state.filters.search.toLowerCase()) || p.artist.toLowerCase().includes(state.filters.search.toLowerCase());
+            const mf = state.filters.format === 'all' || p.category === state.filters.format;
+            const mg = state.filters.genre === 'all' || p.genre === state.filters.genre;
+            return ms && mf && mg;
         });
-        document.getElementById('load-more').addEventListener('click', () => { state.currentPage++; renderCatalog(false); });
+        filtered.sort((a, b) => {
+            if (state.filters.sort === 'name-asc')   return a.title.localeCompare(b.title);
+            if (state.filters.sort === 'price-asc')  return a.price - b.price;
+            if (state.filters.sort === 'price-desc') return b.price - a.price;
+        });
+        state.products = filtered;
+        renderCatalog(resetPage);
+    }
 
-        // Modale
-        const dialog = document.getElementById('product-modal');
-        window.openModal = (id) => {
-            const p = allProducts.find(item => item.id === id);
-            const fb = musicFallbacks[p.fb % musicFallbacks.length];
-            document.getElementById('modal-content').innerHTML = `
-                <div style="font-size: 0.7rem; letter-spacing: 2px; text-transform: uppercase; color: var(--secondary-color); margin-bottom: 1.5rem;">${p.category} // ${p.genre}</div>
-                <img src="${p.img}" alt="${p.title}" onerror="this.onerror=null;this.src='${fb}'">
-                <h2 style="font-size: 2.5rem; line-height: 1.1; margin-bottom: 0.5rem;">${p.title}</h2>
-                <p style="font-family: var(--font-body); font-size: 1.1rem; color: var(--secondary-color); margin-bottom: 1.5rem;">${p.artist}</p>
-                <p style="font-size: 1.8rem; margin-bottom: 2rem;">€${p.price.toFixed(2).replace('.', ',')}</p>
-                <button class="btn-primary" style="width: 100%;" onclick="addToCart(${p.id}); document.getElementById('product-modal').close();">
-                    ${p.upcoming ? 'Pre-ordina Ora' : 'Aggiungi alla Borsa'}
+    function renderCatalog(clearGrid = false) {
+        const grid = document.getElementById('product-grid');
+        const btn  = document.getElementById('load-more');
+        if (clearGrid) grid.innerHTML = '';
+        const si = (state.currentPage - 1) * state.itemsPerPage;
+        const ei = si + state.itemsPerPage;
+        const items = state.products.slice(si, ei);
+        if (state.products.length === 0) {
+            grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:4rem;font-style:italic;">Nessun risultato trovato per i criteri selezionati.</div>';
+            btn.style.display = 'none'; return;
+        }
+        items.forEach(p => { grid.innerHTML += createProductCard(p); });
+        btn.style.display = ei >= state.products.length ? 'none' : 'inline-block';
+    }
+
+    document.getElementById('search').addEventListener('input', e => { state.filters.search = e.target.value; applyFiltersAndRender(); });
+    document.getElementById('filter-format').addEventListener('change', e => { state.filters.format = e.target.value; applyFiltersAndRender(); });
+    document.getElementById('filter-genre').addEventListener('change', e => { state.filters.genre = e.target.value; applyFiltersAndRender(); });
+    document.getElementById('sort').addEventListener('change', e => { state.filters.sort = e.target.value; applyFiltersAndRender(); });
+    document.getElementById('reset-filters').addEventListener('click', () => {
+        ['search','filter-format','filter-genre','sort'].forEach((id, i) => {
+            document.getElementById(id).value = ['','all','all','name-asc'][i];
+        });
+        state.filters = { search:'', format:'all', genre:'all', sort:'name-asc' };
+        applyFiltersAndRender();
+    });
+    document.getElementById('load-more').addEventListener('click', () => { state.currentPage++; renderCatalog(false); });
+
+    // === MODALE ===
+    const dialog = document.getElementById('product-modal');
+
+    window.openModal = (id) => {
+        const p   = allProducts.find(x => x.id === id);
+        const fb  = musicFallbacks[p.fb % musicFallbacks.length];
+        const det = albumDetails[id] || {};
+        const hasDetails = !!det.desc;
+
+        const detailsBlock = hasDetails ? `
+            <div class="details-panel" id="dp-${id}">
+                <div class="details-inner">
+                    <h4>Note sull'album</h4>
+                    <p>${det.desc}</p>
+                    <div class="detail-facts">
+                        ${det.year  ? `<div>Anno<span>${det.year}</span></div>`     : ''}
+                        ${det.label ? `<div>Etichetta<span>${det.label}</span></div>` : ''}
+                        <div>Formato<span>${p.category}</span></div>
+                        <div>Genere<span>${p.genre}</span></div>
+                    </div>
+                </div>
+            </div>` : '';
+
+        document.getElementById('modal-content').innerHTML = `
+            <div style="font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--secondary-color);margin-bottom:1.5rem;">${p.category} // ${p.genre}</div>
+            <img src="${p.img}" alt="${p.title}" onerror="this.onerror=null;this.src='${fb}'">
+            <h2 style="font-size:2.1rem;line-height:1.1;margin-bottom:0.5rem;">${p.title}</h2>
+            <p style="font-family:var(--font-body);font-size:1.1rem;color:var(--secondary-color);margin-bottom:1.2rem;">${p.artist}</p>
+            <p style="font-size:1.8rem;margin-bottom:1.8rem;">€${p.price.toFixed(2).replace('.', ',')}</p>
+            <div class="modal-actions">
+                <button class="btn-primary" style="flex:1;" onclick="addToCart(${p.id});document.getElementById('product-modal').close();">
+                    ${p.upcoming ? 'Pre-ordina Ora' : 'Aggiungi al Carrello'}
                 </button>
-            `;
-            dialog.showModal();
-        };
-        document.querySelector('.close-modal').addEventListener('click', () => dialog.close());
-        dialog.addEventListener('click', (e) => { if (e.target === dialog) dialog.close(); });
+                ${hasDetails ? `<button class="btn-details" id="dbtn-${id}" onclick="toggleDetails(${id})">Dettagli</button>` : ''}
+            </div>
+            ${detailsBlock}
+        `;
+        dialog.showModal();
+    };
 
-        // Carrello
-        window.addToCart = (id) => {
-            const p = allProducts.find(item => item.id === id);
-            state.cart.push(p); saveCart(); updateCartUI();
-            showToast(`${p.title} aggiunto alla borsa.`);
-        };
-        window.removeFromCart = (index) => {
-            state.cart.splice(index, 1); saveCart(); updateCartUI();
-        };
-        function saveCart() { localStorage.setItem('thepoplife_cart', JSON.stringify(state.cart)); }
-        function updateCartUI() {
-            document.getElementById('cart-count').innerText = state.cart.length;
-            const container = document.getElementById('cart-items');
-            if (state.cart.length === 0) {
-                container.innerHTML = '<div style="text-align:center; padding: 4rem; font-style: italic; color: var(--secondary-color);">La tua borsa è vuota.</div>';
-                document.getElementById('cart-total').innerText = '€ 0,00';
-                return;
-            }
-            container.innerHTML = '';
-            let total = 0;
-            state.cart.forEach((item, index) => {
-                total += item.price;
-                const fb = musicFallbacks[item.fb % musicFallbacks.length];
-                container.innerHTML += `
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 1.5rem 0; border-bottom: 1px solid var(--border-color);">
-                        <div style="display: flex; align-items: center; gap: 1rem;">
-                            <img src="${item.img}" onerror="this.onerror=null;this.src='${fb}'" style="width: 60px; height: 60px; object-fit: cover; border: 1px solid var(--border-color);">
-                            <div>
-                                <strong style="font-size: 1.1rem; display: block; font-family: var(--font-headings); font-weight: 700;">${item.title}</strong>
-                                <span style="color: var(--secondary-color); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;">${item.artist}</span>
-                            </div>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 2rem;">
-                            <span style="font-size: 1.2rem;">€${item.price.toFixed(2).replace('.', ',')}</span>
-                            <button class="btn-secondary" style="border: none; padding: 0.5rem; text-decoration: underline;" onclick="removeFromCart(${index})">Rimuovi</button>
+    window.toggleDetails = (id) => {
+        const panel = document.getElementById(`dp-${id}`);
+        const btn   = document.getElementById(`dbtn-${id}`);
+        if (!panel || !btn) return;
+        const isOpen = panel.classList.toggle('open');
+        btn.classList.toggle('active', isOpen);
+        btn.textContent = isOpen ? 'Nascondi' : 'Dettagli';
+    };
+
+    document.querySelector('.close-modal').addEventListener('click', () => dialog.close());
+    dialog.addEventListener('click', e => { if (e.target === dialog) dialog.close(); });
+
+    // === CARRELLO ===
+    window.addToCart = (id) => {
+        const p = allProducts.find(x => x.id === id);
+        state.cart.push(p); saveCart(); updateCartUI();
+        showToast(`${p.title} aggiunto al carrello.`);
+    };
+    window.removeFromCart = (i) => {
+        state.cart.splice(i, 1); saveCart(); updateCartUI();
+    };
+    function saveCart() { localStorage.setItem('thepoplife_cart', JSON.stringify(state.cart)); }
+    function updateCartUI() {
+        const n = state.cart.length;
+        document.getElementById('cart-count').innerText = n;
+        document.querySelectorAll('.cart-count-mob').forEach(el => el.innerText = n);
+        const cont = document.getElementById('cart-items');
+        if (n === 0) {
+            cont.innerHTML = '<div style="text-align:center;padding:4rem;font-style:italic;color:var(--secondary-color);">Il tuo carrello è vuoto.</div>';
+            document.getElementById('cart-total').innerText = '€ 0,00';
+            return;
+        }
+        cont.innerHTML = ''; let total = 0;
+        state.cart.forEach((item, idx) => {
+            total += item.price;
+            const fb = musicFallbacks[item.fb % musicFallbacks.length];
+            cont.innerHTML += `
+                <div style="display:flex;justify-content:space-between;align-items:center;padding:1.5rem 0;border-bottom:1px solid var(--border-color);">
+                    <div style="display:flex;align-items:center;gap:1rem;">
+                        <img src="${item.img}" onerror="this.onerror=null;this.src='${fb}'" style="width:60px;height:60px;object-fit:cover;border:1px solid var(--border-color);">
+                        <div>
+                            <strong style="font-size:1.1rem;display:block;font-family:var(--font-headings);font-weight:700;">${item.title}</strong>
+                            <span style="color:var(--secondary-color);font-size:0.8rem;text-transform:uppercase;letter-spacing:1px;">${item.artist}</span>
                         </div>
                     </div>
-                `;
-            });
-            document.getElementById('cart-total').innerText = `€ ${total.toFixed(2).replace('.', ',')}`;
-        }
-
-        // Notifiche
-        function showToast(message) {
-            const container = document.getElementById('toast-container');
-            const toast = document.createElement('div');
-            toast.className = 'toast';
-            toast.innerText = message;
-            container.appendChild(toast);
-            setTimeout(() => { toast.remove(); }, 3000);
-        }
-
-        // Newsletter
-        document.getElementById('newsletter-form').addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = document.getElementById('footer-email').value;
-            if (email) {
-                showToast('Iscrizione completata. Grazie!');
-                document.getElementById('footer-email').value = '';
-            }
+                    <div style="display:flex;align-items:center;gap:2rem;">
+                        <span style="font-size:1.2rem;">€${item.price.toFixed(2).replace('.', ',')}</span>
+                        <button class="btn-secondary" style="border:none;padding:0.5rem;text-decoration:underline;" onclick="removeFromCart(${idx})">Rimuovi</button>
+                    </div>
+                </div>`;
         });
-    </script>
+        document.getElementById('cart-total').innerText = `€ ${total.toFixed(2).replace('.', ',')}`;
+    }
+
+    // === TOAST ===
+    function showToast(msg) {
+        const c = document.getElementById('toast-container');
+        const t = document.createElement('div');
+        t.className = 'toast'; t.innerText = msg;
+        c.appendChild(t);
+        setTimeout(() => t.remove(), 3000);
+    }
+
+    // === NEWSLETTER ===
+    document.getElementById('newsletter-form').addEventListener('submit', e => {
+        e.preventDefault();
+        if (document.getElementById('footer-email').value) {
+            showToast('Iscrizione completata. Grazie!');
+            document.getElementById('footer-email').value = '';
+        }
+    });
+</script>
 </body>
 </html>
