@@ -9,13 +9,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #f5f0e8;
+            --bg-color: #ede5d8;
             --text-color: #1a1a1a;
             --primary-color: #8c7a6b;
             --secondary-color: #7a7a7a;
             --card-bg: transparent;
-            --border-color: #ddd8ce;
-            --hero-bg: #ede8df;
+            --border-color: #d4cdc3;
+            --hero-bg: #e4dcd0;
             --footer-bg: #121212;
             --footer-text: #f0eee9;
             --space-sm: 0.8rem;
@@ -104,16 +104,16 @@
             animation: revealLine 1s 0.3s ease forwards;
         }
 
-        /* Cards staggered */
-        .card { opacity: 0; animation: fadeInUp 0.55s ease forwards; }
-        .card:nth-child(1) { animation-delay: 0.04s; }
-        .card:nth-child(2) { animation-delay: 0.09s; }
-        .card:nth-child(3) { animation-delay: 0.14s; }
-        .card:nth-child(4) { animation-delay: 0.19s; }
-        .card:nth-child(5) { animation-delay: 0.24s; }
-        .card:nth-child(6) { animation-delay: 0.29s; }
-        .card:nth-child(7) { animation-delay: 0.34s; }
-        .card:nth-child(8) { animation-delay: 0.39s; }
+        /* Cards staggered — solo nelle griglie prodotto, non nel carrello */
+        .grid .card { opacity: 0; animation: fadeInUp 0.55s ease forwards; }
+        .grid .card:nth-child(1) { animation-delay: 0.04s; }
+        .grid .card:nth-child(2) { animation-delay: 0.09s; }
+        .grid .card:nth-child(3) { animation-delay: 0.14s; }
+        .grid .card:nth-child(4) { animation-delay: 0.19s; }
+        .grid .card:nth-child(5) { animation-delay: 0.24s; }
+        .grid .card:nth-child(6) { animation-delay: 0.29s; }
+        .grid .card:nth-child(7) { animation-delay: 0.34s; }
+        .grid .card:nth-child(8) { animation-delay: 0.39s; }
 
         /* ===== HEADER ===== */
         header {
@@ -121,6 +121,7 @@
             padding: var(--space-md);
             position: sticky; top: 0; z-index: 100;
             backdrop-filter: blur(10px);
+            background-color: var(--bg-color);
             background-color: color-mix(in srgb, var(--bg-color) 92%, transparent);
         }
         .nav-container {
@@ -140,18 +141,29 @@
             letter-spacing: -0.5px; text-align: center;
         }
 
-        nav button.nav-link {
+        nav button.nav-link,
+        .nav-left button.nav-link,
+        .nav-right button.nav-link,
+        .mobile-nav-menu button.nav-link {
             background: none; border: none; color: var(--text-color);
-            font-size: 0.8rem; text-transform: uppercase; letter-spacing: 2px;
+            font-family: var(--font-body);
+            font-size: 0.85rem; font-weight: 300;
+            text-transform: uppercase; letter-spacing: 2px;
             text-align: left; padding-bottom: 3px; position: relative;
         }
-        nav button.nav-link::after {
+        nav button.nav-link::after,
+        .nav-left button.nav-link::after,
+        .nav-right button.nav-link::after {
             content: ''; position: absolute; bottom: -1px; left: 0;
             width: 0; height: 1px; background-color: var(--text-color);
             transition: width 0.3s ease;
         }
-        nav button.nav-link:hover { color: var(--primary-color); }
-        nav button.nav-link:hover::after { width: 100%; }
+        nav button.nav-link:hover,
+        .nav-left button.nav-link:hover,
+        .nav-right button.nav-link:hover { color: var(--primary-color); }
+        nav button.nav-link:hover::after,
+        .nav-left button.nav-link:hover::after,
+        .nav-right button.nav-link:hover::after { width: 100%; }
 
         /* Hamburger mobile */
         .hamburger { display: none; flex-direction: column; gap: 6px; background: none; border: none; padding: 5px; }
@@ -312,7 +324,7 @@
             max-width: 62%; aspect-ratio: 1/1; object-fit: cover;
             border: 1px solid var(--border-color); margin: 0 auto var(--space-md); display: block;
         }
-        .close-modal { position: absolute; top: 15px; right: 15px; background: transparent; border: none; font-size: 2rem; font-weight: 300; color: var(--text-color); line-height: 1; }
+        .close-modal { position: absolute; top: 15px; right: 18px; background: transparent; border: none; font-size: 2rem; font-weight: 300; color: var(--text-color); line-height: 1; z-index: 10; cursor: pointer; }
 
         /* Bottone Dettagli e pannello */
         .modal-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 0; }
@@ -554,7 +566,6 @@
 </footer>
 
 <dialog id="product-modal">
-    <button class="close-modal">&times;</button>
     <div class="modal-content" id="modal-content"></div>
 </dialog>
 <div id="toast-container" aria-live="polite"></div>
@@ -641,7 +652,7 @@
 
     let state = {
         products: allProducts.filter(p => !p.upcoming),
-        cart: JSON.parse(localStorage.getItem('thepoplife_cart')) || [],
+        cart: (JSON.parse(localStorage.getItem('thepoplife_cart')) || []).map(x => ({ id: x.id ?? x })),
         theme: localStorage.getItem('thepoplife_theme') || 'light',
         currentPage: 1, itemsPerPage: 8,
         filters: { search: '', format: 'all', genre: 'all', sort: 'name-asc' }
@@ -710,9 +721,9 @@
             return ms && mf && mg;
         });
         filtered.sort((a, b) => {
-            if (state.filters.sort === 'name-asc')   return a.title.localeCompare(b.title);
             if (state.filters.sort === 'price-asc')  return a.price - b.price;
             if (state.filters.sort === 'price-desc') return b.price - a.price;
+            return a.title.localeCompare(b.title); // default: name-asc
         });
         state.products = filtered;
         renderCatalog(resetPage);
@@ -729,7 +740,8 @@
             grid.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:4rem;font-style:italic;">Nessun risultato trovato per i criteri selezionati.</div>';
             btn.style.display = 'none'; return;
         }
-        items.forEach(p => { grid.innerHTML += createProductCard(p); });
+        // insertAdjacentHTML evita il re-parsing dell'intero innerHTML
+        items.forEach(p => grid.insertAdjacentHTML('beforeend', createProductCard(p)));
         btn.style.display = ei >= state.products.length ? 'none' : 'inline-block';
     }
 
@@ -770,6 +782,7 @@
             </div>` : '';
 
         document.getElementById('modal-content').innerHTML = `
+            <button class="close-modal" onclick="document.getElementById('product-modal').close()">&times;</button>
             <div style="font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--secondary-color);margin-bottom:1.5rem;">${p.category} // ${p.genre}</div>
             <img src="${p.img}" alt="${p.title}" onerror="this.onerror=null;this.src='${fb}'">
             <h2 style="font-size:2.1rem;line-height:1.1;margin-bottom:0.5rem;">${p.title}</h2>
@@ -795,17 +808,20 @@
         btn.textContent = isOpen ? 'Nascondi' : 'Dettagli';
     };
 
-    document.querySelector('.close-modal').addEventListener('click', () => dialog.close());
     dialog.addEventListener('click', e => { if (e.target === dialog) dialog.close(); });
 
     // === CARRELLO ===
     window.addToCart = (id) => {
         const p = allProducts.find(x => x.id === id);
-        state.cart.push(p); saveCart(); updateCartUI();
+        if (!p) return;
+        state.cart.push({ id: p.id }); // salva solo l'id per evitare dati stantii dal localStorage
+        saveCart(); updateCartUI();
         showToast(`${p.title} aggiunto al carrello.`);
     };
-    window.removeFromCart = (i) => {
-        state.cart.splice(i, 1); saveCart(); updateCartUI();
+    window.removeFromCart = (id) => {
+        // rimuove la prima occorrenza con quell'id (corretto anche con duplicati)
+        const i = state.cart.findIndex(x => x.id === id);
+        if (i !== -1) { state.cart.splice(i, 1); saveCart(); updateCartUI(); }
     };
     function saveCart() { localStorage.setItem('thepoplife_cart', JSON.stringify(state.cart)); }
     function updateCartUI() {
@@ -819,10 +835,13 @@
             return;
         }
         cont.innerHTML = ''; let total = 0;
-        state.cart.forEach((item, idx) => {
+        state.cart.forEach(cartItem => {
+            // recupera sempre dati freschi da allProducts (include fb, img, ecc.)
+            const item = allProducts.find(x => x.id === cartItem.id);
+            if (!item) return;
             total += item.price;
             const fb = musicFallbacks[item.fb % musicFallbacks.length];
-            cont.innerHTML += `
+            cont.insertAdjacentHTML('beforeend', `
                 <div style="display:flex;justify-content:space-between;align-items:center;padding:1.5rem 0;border-bottom:1px solid var(--border-color);">
                     <div style="display:flex;align-items:center;gap:1rem;">
                         <img src="${item.img}" onerror="this.onerror=null;this.src='${fb}'" style="width:60px;height:60px;object-fit:cover;border:1px solid var(--border-color);">
@@ -833,12 +852,21 @@
                     </div>
                     <div style="display:flex;align-items:center;gap:2rem;">
                         <span style="font-size:1.2rem;">€${item.price.toFixed(2).replace('.', ',')}</span>
-                        <button class="btn-secondary" style="border:none;padding:0.5rem;text-decoration:underline;" onclick="removeFromCart(${idx})">Rimuovi</button>
+                        <button class="btn-secondary" style="border:none;padding:0.5rem;text-decoration:underline;" onclick="removeFromCart(${item.id})">Rimuovi</button>
                     </div>
-                </div>`;
+                </div>`);
         });
         document.getElementById('cart-total').innerText = `€ ${total.toFixed(2).replace('.', ',')}`;
     }
+
+    // Chiudi menu mobile cliccando fuori da esso
+    document.addEventListener('click', e => {
+        const menu = document.getElementById('mobile-nav-menu');
+        const hamburger = document.getElementById('hamburger-btn');
+        if (menu.classList.contains('open') && !menu.contains(e.target) && !hamburger.contains(e.target)) {
+            menu.classList.remove('open');
+        }
+    });
 
     // === TOAST ===
     function showToast(msg) {
