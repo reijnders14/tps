@@ -9,13 +9,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #f5f0e8;
+            --bg-color: #ede5d8;
             --text-color: #1a1a1a;
             --primary-color: #8c7a6b;
             --secondary-color: #7a7a7a;
             --card-bg: transparent;
-            --border-color: #ddd8ce;
-            --hero-bg: #ede8df;
+            --border-color: #d4cdc3;
+            --hero-bg: #e4dcd0;
             --footer-bg: #121212;
             --footer-text: #f0eee9;
             --space-sm: 0.8rem;
@@ -323,7 +323,7 @@
             max-width: 62%; aspect-ratio: 1/1; object-fit: cover;
             border: 1px solid var(--border-color); margin: 0 auto var(--space-md); display: block;
         }
-        .close-modal { position: absolute; top: 15px; right: 15px; background: transparent; border: none; font-size: 2rem; font-weight: 300; color: var(--text-color); line-height: 1; }
+        .close-modal { position: absolute; top: 15px; right: 18px; background: transparent; border: none; font-size: 2rem; font-weight: 300; color: var(--text-color); line-height: 1; z-index: 10; cursor: pointer; }
 
         /* Bottone Dettagli e pannello */
         .modal-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; margin-bottom: 0; }
@@ -565,7 +565,6 @@
 </footer>
 
 <dialog id="product-modal">
-    <button class="close-modal">&times;</button>
     <div class="modal-content" id="modal-content"></div>
 </dialog>
 <div id="toast-container" aria-live="polite"></div>
@@ -781,6 +780,7 @@
             </div>` : '';
 
         document.getElementById('modal-content').innerHTML = `
+            <button class="close-modal" onclick="document.getElementById('product-modal').close()">&times;</button>
             <div style="font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--secondary-color);margin-bottom:1.5rem;">${p.category} // ${p.genre}</div>
             <img src="${p.img}" alt="${p.title}" onerror="this.onerror=null;this.src='${fb}'">
             <h2 style="font-size:2.1rem;line-height:1.1;margin-bottom:0.5rem;">${p.title}</h2>
@@ -806,7 +806,6 @@
         btn.textContent = isOpen ? 'Nascondi' : 'Dettagli';
     };
 
-    document.querySelector('.close-modal').addEventListener('click', () => dialog.close());
     dialog.addEventListener('click', e => { if (e.target === dialog) dialog.close(); });
 
     // === CARRELLO ===
