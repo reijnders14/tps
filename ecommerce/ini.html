@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurazione Negozio</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <main>
+        <div class="form-box">
+            <h2>Configura il tuo E-commerce</h2>
+            <form id="config-form">
+                <div class="form-group">
+                    <label for="shop-name">Nome del Negozio</label>
+                    <input type="text" id="shop-name" required placeholder="Es. Tech Gadget Hub">
+                </div>
+                <div class="form-group">
+                    <label for="shop-category">Categoria Prodotti</label>
+                    <select id="shop-category">
+                        <option value="Elettronica & Accessori">Elettronica & Accessori</option>
+                        <option value="Abbigliamento & Moda">Abbigliamento & Moda</option>
+                        <option value="Casa & Sostenibilità">Casa & Sostenibilità</option>
+                        <option value="Sport & Fitness">Sport & Fitness</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn" style="width: 100%;">Apri il Negozio</button>
+            </form>
+        </div>
+    </main>
+    <div id="toast-container"></div>
+    <script src="js/app.js"></script>
+</body>
+</html>
