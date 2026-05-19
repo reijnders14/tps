@@ -1,0 +1,4 @@
+id;marca;nome;descrizione_breve;descrizione_completa;prezzo;immagine
+1;TechBrand;Cuffie Wireless ANC;Audio ad alta fedeltà;Cuffie over-ear con cancellazione attiva del rumore, 40 ore di autonomia e ricarica rapida USB-C.;89.99;assets/prod1.jpg
+2;EcoStyle;Zaino in Canapa;Elegante e sostenibile;Zaino idrorepellente realizzato in fibra di canapa naturale con scomparto protettivo per laptop fino a 15.6 pollici.;55.50;assets/prod2.jpg
+3;FitLife;Smartwatch Sport;Tracker fitness avanzato;Smartwatch con cardiofrequenzimetro, monitoraggio del sonno, GPS integrato e impermeabilità fino a 50 metri.;129.00;assets/prod3.jpg
