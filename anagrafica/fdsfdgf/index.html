@@ -1,0 +1,166 @@
+/* ============================================================
+   utils.js — Funzioni condivise tra tutte le pagine
+   ============================================================ */
+
+/* ---------- Configurazione negozio ---------- */
+
+/**
+ * Legge la configurazione dal localStorage.
+ * @returns {{ nome: string, categoria: string }}
+ */
+function leggiConfig() {
+  return {
+    nome:      localStorage.getItem('shop_nome')      || 'Il Mio Negozio',
+    categoria: localStorage.getItem('shop_categoria') || '',
+  };
+}
+
+/**
+ * Aggiorna header con nome e categoria del negozio.
+ */
+function applicaConfig() {
+  const cfg = leggiConfig();
+  const elNome = document.getElementById('shop-nome');
+  const elCat  = document.getElementById('shop-categoria');
+  if (elNome) elNome.textContent = cfg.nome;
+  if (elCat)  elCat.textContent  = cfg.categoria;
+  document.title = cfg.nome;
+}
+
+/* ---------- Carrello ---------- */
+
+/**
+ * Restituisce l'array dei prodotti nel carrello.
+ * @returns {Array<Object>}
+ */
+function leggiCarrello() {
+  try {
+    return JSON.parse(localStorage.getItem('carrello')) || [];
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Salva l'array carrello in localStorage.
+ * @param {Array<Object>} items
+ */
+function salvaCarrello(items) {
+  localStorage.setItem('carrello', JSON.stringify(items));
+}
+
+/**
+ * Aggiunge un prodotto al carrello (un elemento per voce).
+ * @param {Object} prodotto
+ */
+function aggiungiAlCarrello(prodotto) {
+  const items = leggiCarrello();
+  items.push(prodotto);
+  salvaCarrello(items);
+  aggiornaContatore();
+  mostraToast('☕ Prodotto aggiunto al carrello', 'verde');
+}
+
+/**
+ * Rimuove un elemento per indice dal carrello.
+ * @param {number} idx
+ */
+function rimuoviDalCarrello(idx) {
+  const items = leggiCarrello();
+  items.splice(idx, 1);
+  salvaCarrello(items);
+  aggiornaContatore();
+}
+
+/**
+ * Svuota completamente il carrello.
+ */
+function svuotaCarrello() {
+  salvaCarrello([]);
+  aggiornaContatore();
+  mostraToast('🗑️ Carrello svuotato', 'rosso');
+}
+
+/**
+ * Aggiorna il badge numerico nell'header.
+ */
+function aggiornaContatore() {
+  const badge = document.getElementById('carrello-count');
+  if (!badge) return;
+  const n = leggiCarrello().length;
+  badge.textContent = n;
+  badge.style.display = n === 0 ? 'none' : 'flex';
+}
+
+/* ---------- Toast ---------- */
+
+/**
+ * Mostra una notifica toast temporanea.
+ * @param {string} messaggio
+ * @param {'verde'|'rosso'|''} tipo
+ */
+function mostraToast(messaggio, tipo = '') {
+  const container = document.getElementById('toast-container');
+  if (!container) return;
+
+  const toast = document.createElement('div');
+  toast.className = ['toast', tipo].filter(Boolean).join(' ');
+  toast.textContent = messaggio;
+  container.appendChild(toast);
+
+  // Rimozione dopo animazione (2s totali)
+  setTimeout(() => toast.remove(), 2100);
+}
+
+/* ---------- Parser CSV ---------- */
+
+/**
+ * Converte una stringa CSV in array di oggetti.
+ * La prima riga è usata come intestazione (chiavi).
+ * @param {string} testo
+ * @returns {Array<Object>}
+ */
+function parseCSV(testo) {
+  const righe = testo.trim().split('\n');
+  if (righe.length < 2) return [];
+  const intestazioni = righe[0].split(',').map(h => h.trim());
+  return righe.slice(1).map(riga => {
+    const valori = riga.split(',').map(v => v.trim());
+    const obj = {};
+    intestazioni.forEach((h, i) => { obj[h] = valori[i] || ''; });
+    return obj;
+  });
+}
+
+/**
+ * Carica e parsa il file CSV dei prodotti.
+ * @returns {Promise<Array<Object>>}
+ */
+async function caricaProdotti() {
+  try {
+    const res = await fetch('prodotti.csv');
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const testo = await res.text();
+    return parseCSV(testo);
+  } catch (err) {
+    console.error('Errore caricamento prodotti.csv:', err);
+    return [];
+  }
+}
+
+/* ---------- Formattazione ---------- */
+
+/**
+ * Formatta un numero come prezzo in Euro.
+ * @param {string|number} val
+ * @returns {string}
+ */
+function formatPrezzo(val) {
+  return parseFloat(val).toFixed(2).replace('.', ',') + ' €';
+}
+
+/* ---------- Inizializzazione comune ---------- */
+document.addEventListener('DOMContentLoaded', () => {
+  applicaConfig();
+  aggiornaContatore();
+});

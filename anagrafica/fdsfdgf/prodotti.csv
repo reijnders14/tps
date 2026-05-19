@@ -1,0 +1,143 @@
+/* ============================================================
+   prodotto.js — Logica pagina dettaglio prodotto
+   ============================================================ */
+
+/**
+ * Costruisce il DOM del dettaglio prodotto.
+ * @param {Object} p — prodotto dal CSV
+ * @returns {HTMLElement}
+ */
+function creaDettaglio(p) {
+  const wrapper = document.createElement('div');
+  wrapper.className = 'dettaglio-grid';
+
+  /* --- Colonna immagine --- */
+  const colImg = document.createElement('div');
+  colImg.className = 'det-img-wrap';
+
+  const img = document.createElement('img');
+  img.src = `assets/${p.immagine}`;
+  img.alt = p.nome;
+  img.onerror = () => {
+    colImg.style.background = 'linear-gradient(135deg, #ede5d4, #c9b99a)';
+    img.style.opacity = '0';
+  };
+  colImg.appendChild(img);
+
+  /* --- Colonna info --- */
+  const colInfo = document.createElement('div');
+  colInfo.className = 'det-info';
+
+  // Marca
+  const marca = document.createElement('p');
+  marca.className = 'det-marca';
+  marca.textContent = p.marca;
+
+  // Nome
+  const nome = document.createElement('h1');
+  nome.className = 'det-nome';
+  nome.textContent = p.nome;
+
+  // Prezzo
+  const prezzo = document.createElement('div');
+  prezzo.className = 'det-prezzo';
+  prezzo.textContent = formatPrezzo(p.prezzo);
+
+  // Divider
+  const div1 = document.createElement('div');
+  div1.className = 'det-divider';
+
+  // Label descrizione
+  const descLabel = document.createElement('p');
+  descLabel.className = 'det-desc-label';
+  descLabel.textContent = 'Descrizione';
+
+  // Descrizione completa
+  const desc = document.createElement('p');
+  desc.className = 'det-desc';
+  desc.textContent = p.descrizione_completa;
+
+  // Divider
+  const div2 = document.createElement('div');
+  div2.className = 'det-divider';
+
+  // Azioni
+  const azioni = document.createElement('div');
+  azioni.className = 'det-azioni';
+
+  // Pulsante torna al catalogo
+  const btnTorna = document.createElement('a');
+  btnTorna.href = 'index.html';
+  btnTorna.className = 'btn btn-secondary';
+  btnTorna.textContent = '← Catalogo';
+
+  // Pulsante aggiungi al carrello
+  const btnAggiungi = document.createElement('button');
+  btnAggiungi.className = 'btn btn-primary';
+  btnAggiungi.textContent = '🛒 Aggiungi al carrello';
+  btnAggiungi.addEventListener('click', () => {
+    aggiungiAlCarrello({
+      id:       p.id,
+      nome:     p.nome,
+      marca:    p.marca,
+      prezzo:   p.prezzo,
+      immagine: p.immagine,
+      descrizione_breve: p.descrizione_breve,
+    });
+  });
+
+  azioni.appendChild(btnTorna);
+  azioni.appendChild(btnAggiungi);
+
+  // Assembla colonna info
+  colInfo.appendChild(marca);
+  colInfo.appendChild(nome);
+  colInfo.appendChild(prezzo);
+  colInfo.appendChild(div1);
+  colInfo.appendChild(descLabel);
+  colInfo.appendChild(desc);
+  colInfo.appendChild(div2);
+  colInfo.appendChild(azioni);
+
+  wrapper.appendChild(colImg);
+  wrapper.appendChild(colInfo);
+
+  return wrapper;
+}
+
+/* ---------- Inizializzazione ---------- */
+
+document.addEventListener('DOMContentLoaded', async () => {
+  // Legge l'ID prodotto dall'URL (?id=X)
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get('id');
+
+  const container = document.getElementById('dettaglio-content');
+
+  if (!id) {
+    container.textContent = 'Prodotto non specificato.';
+    return;
+  }
+
+  // Carica il CSV e cerca il prodotto
+  const prodotti = await caricaProdotti();
+  const prodotto = prodotti.find(p => p.id === id);
+
+  if (!prodotto) {
+    container.textContent = 'Prodotto non trovato.';
+    return;
+  }
+
+  // Aggiorna breadcrumb e titolo pagina
+  document.getElementById('breadcrumb-nome').textContent = prodotto.nome;
+  document.title = prodotto.nome;
+
+  // Aggiorna footer
+  const footerNome = document.getElementById('shop-nome-footer');
+  const cfg = leggiConfig();
+  if (footerNome) footerNome.textContent = cfg.nome;
+
+  // Mostra dettaglio
+  container.innerHTML = '';
+  container.appendChild(creaDettaglio(prodotto));
+});

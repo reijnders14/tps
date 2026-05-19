@@ -1,0 +1,174 @@
+/* ============================================================
+   catalogo.js — Caricamento e rendering del catalogo prodotti
+   ============================================================ */
+
+// Array master dei prodotti caricati dal CSV
+let prodottiTutti = [];
+
+/* ---------- Creazione card prodotto ---------- */
+
+/**
+ * Costruisce il DOM di una card prodotto.
+ * @param {Object} p — prodotto dal CSV
+ * @returns {HTMLElement}
+ */
+function creaCard(p) {
+  const card = document.createElement('article');
+  card.className = 'card-prodotto';
+
+  // Wrapper immagine
+  const imgWrap = document.createElement('div');
+  imgWrap.className = 'card-img-wrap';
+
+  const img = document.createElement('img');
+  img.src = `assets/${p.immagine}`;
+  img.alt = p.nome;
+  img.loading = 'lazy';
+  img.onerror = () => {
+    // Placeholder visivo se l'immagine non esiste
+    imgWrap.style.background = 'linear-gradient(135deg, #ede5d4, #c9b99a)';
+    img.style.opacity = '0';
+  };
+
+  // Badge categoria
+  const badge = document.createElement('span');
+  badge.className = 'card-badge';
+  badge.textContent = p.categoria;
+
+  imgWrap.appendChild(img);
+  imgWrap.appendChild(badge);
+
+  // Corpo card
+  const body = document.createElement('div');
+  body.className = 'card-body';
+
+  const marca = document.createElement('p');
+  marca.className = 'card-marca';
+  marca.textContent = p.marca;
+
+  const nome = document.createElement('h2');
+  nome.className = 'card-nome';
+  nome.textContent = p.nome;
+
+  const desc = document.createElement('p');
+  desc.className = 'card-desc';
+  desc.textContent = p.descrizione_breve;
+
+  body.appendChild(marca);
+  body.appendChild(nome);
+  body.appendChild(desc);
+
+  // Footer card con prezzo e pulsante
+  const footer = document.createElement('div');
+  footer.className = 'card-footer';
+
+  const prezzo = document.createElement('div');
+  prezzo.className = 'card-prezzo';
+  const sup = document.createElement('sup');
+  sup.textContent = '€';
+  prezzo.appendChild(sup);
+  prezzo.appendChild(document.createTextNode(
+    parseFloat(p.prezzo).toFixed(2).replace('.', ',')
+  ));
+
+  const btnDettagli = document.createElement('a');
+  btnDettagli.href = `prodotto.html?id=${p.id}`;
+  btnDettagli.className = 'btn btn-primary';
+  btnDettagli.textContent = 'Dettagli';
+  btnDettagli.setAttribute('aria-label', `Dettagli di ${p.nome}`);
+
+  footer.appendChild(prezzo);
+  footer.appendChild(btnDettagli);
+
+  card.appendChild(imgWrap);
+  card.appendChild(body);
+  card.appendChild(footer);
+
+  return card;
+}
+
+/* ---------- Rendering griglia ---------- */
+
+/**
+ * Svuota e ri-popola la griglia con i prodotti forniti.
+ * @param {Array<Object>} prodotti
+ */
+function renderGriglia(prodotti) {
+  const griglia = document.getElementById('prodotti-grid');
+  griglia.innerHTML = '';
+
+  if (prodotti.length === 0) {
+    // Messaggio prodotti non trovati
+    const msg = document.createElement('div');
+    msg.className = 'msg-vuoto';
+    const ico = document.createElement('span');
+    ico.textContent = '🔍';
+    msg.appendChild(ico);
+    msg.appendChild(document.createTextNode('Nessun prodotto trovato.'));
+    griglia.appendChild(msg);
+    return;
+  }
+
+  const fragment = document.createDocumentFragment();
+  prodotti.forEach(p => fragment.appendChild(creaCard(p)));
+  griglia.appendChild(fragment);
+}
+
+/* ---------- Filtro e ordinamento ---------- */
+
+/**
+ * Applica il testo di ricerca e l'ordinamento selezionato.
+ */
+function applicaFiltri() {
+  const testo  = document.getElementById('filtro-testo').value.toLowerCase();
+  const ordine = document.getElementById('filtro-ordine').value;
+
+  let risultati = prodottiTutti.filter(p =>
+    p.nome.toLowerCase().includes(testo)       ||
+    p.marca.toLowerCase().includes(testo)      ||
+    p.descrizione_breve.toLowerCase().includes(testo)
+  );
+
+  // Ordinamento
+  if (ordine === 'prezzo-asc') {
+    risultati.sort((a, b) => parseFloat(a.prezzo) - parseFloat(b.prezzo));
+  } else if (ordine === 'prezzo-desc') {
+    risultati.sort((a, b) => parseFloat(b.prezzo) - parseFloat(a.prezzo));
+  } else if (ordine === 'nome') {
+    risultati.sort((a, b) => a.nome.localeCompare(b.nome, 'it'));
+  }
+
+  renderGriglia(risultati);
+}
+
+/* ---------- Inizializzazione ---------- */
+
+document.addEventListener('DOMContentLoaded', async () => {
+  // Reindirizza a configurazione se non è mai stata fatta
+  if (!localStorage.getItem('shop_nome')) {
+    window.location.href = 'ini.html';
+    return;
+  }
+
+  // Aggiorna titolo hero con nome negozio
+  const cfg = leggiConfig();
+  const heroTitolo = document.getElementById('hero-titolo');
+  if (heroTitolo) heroTitolo.textContent = cfg.nome;
+
+  // Aggiorna footer
+  const footerNome = document.getElementById('shop-nome-footer');
+  if (footerNome) footerNome.textContent = cfg.nome;
+
+  // Carica CSV e mostra prodotti
+  prodottiTutti = await caricaProdotti();
+
+  if (prodottiTutti.length === 0) {
+    mostraToast('⚠️ Impossibile caricare prodotti.csv', 'rosso');
+  }
+
+  renderGriglia(prodottiTutti);
+
+  // Listener filtri
+  document.getElementById('filtro-testo').addEventListener('input', applicaFiltri);
+  document.getElementById('filtro-ordine').addEventListener('change', applicaFiltri);
+});
