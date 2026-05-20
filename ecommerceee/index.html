@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catalogo Prodotti</title>
+    <style>
+        :root { --primary-color: #333; --accent-color: #007bff; }
+        body { font-family: sans-serif; margin: 0; padding: 20px; background: #f8f9fa; color: var(--primary-color); }
+        header { display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto 30px auto; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 20px; max-width: 1200px; margin: 0 auto; }
+        .card { background: white; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); padding: 15px; display: flex; flex-direction: column; justify-content: space-between; }
+        .card img { max-width: 100%; height: 200px; object-fit: cover; border-radius: 4px; }
+        .card h3 { margin: 15px 0 5px 0; font-size: 1.2rem; }
+        .card .marca { font-size: 0.9rem; color: #777; text-transform: uppercase; }
+        .card .prezzo { font-size: 1.3rem; font-weight: bold; color: var(--accent-color); margin: 10px 0; }
+        .card button { background: var(--accent-color); color: white; border: none; padding: 10px; border-radius: 4px; cursor: pointer; text-decoration: none; text-align: center; font-size: 0.9rem; }
+        .btn-carrello { background: #28a745; color: white; padding: 10px 20px; border-radius: 4px; text-decoration: none; font-weight: bold; }
+    </style>
+    <script>
+        // Iniezione dinamica del CSS di ini.html
+        const customCss = localStorage.getItem('customCss');
+        if (customCss) {
+            const style = document.createElement('style');
+            style.textContent = customCss;
+            document.head.appendChild(style);
+        }
+    </script>
+</head>
+<body>
+    <header>
+        <h1>Il Nostro Catalogo</h1>
+        <a href="carrello.html" class="btn-carrello">Vedi Carrello 🛒</a>
+    </header>
+
+    <div class="grid" id="catalogoGrid"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const catalogo = JSON.parse(localStorage.getItem('catalogoProdotti')) || [];
+            const grid = document.getElementById('catalogoGrid');
+
+            if (catalogo.length === 0) {
+                grid.innerHTML = "<p>Nessun prodotto disponibile. Configura la piattaforma da <a href='ini.html'>ini.html</a>.</p>";
+                return;
+            }
+
+            catalogo.forEach((prod, index) => {
+                const card = document.createElement('div');
+                card.className = 'card';
+                card.innerHTML = `
+                    <div>
+                        <img src="${prod.immagine || 'https://via.placeholder.com/250'}" alt="${prod.modello}">
+                        <div class="marca">${prod.marca}</div>
+                        <h3>${prod.modello}</h3>
+                    </div>
+                    <div>
+                        <div class="prezzo">€${prod.prezzo}</div>
+                        <button onclick="vediDettaglio(${index})" style="width: 100%;">Dettagli</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        });
+
+        function vediDettaglio(index) {
+            window.location.href = `prodotto.html?id=${index}`;
+        }
+    </script>
+</body>
+</html>
