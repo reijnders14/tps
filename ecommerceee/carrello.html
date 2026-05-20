@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Il Tuo Carrello</title>
+    <style>
+        :root { --accent-color: #007bff; }
+        body { font-family: sans-serif; background: #f8f9fa; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #f1f1f1; }
+        .totale-box { text-align: right; margin-top: 20px; font-size: 1.4rem; font-weight: bold; }
+        .actions { margin-top: 30px; display: flex; justify-content: space-between; gap: 15px; }
+        .btn { padding: 12px 25px; border: none; border-radius: 4px; cursor: pointer; font-size: 1rem; font-weight: bold; text-decoration: none; text-align: center;}
+        .btn-back { background: #6c757d; color: white; }
+        .btn-pdf { background: #ffc107; color: #212529; }
+        .btn-clear { background: #dc3545; color: white; }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Il Tuo Carrello</h1>
+        <table id="carrelloTabella">
+            <thead>
+                <tr>
+                    <th>Marca</th>
+                    <th>Modello</th>
+                    <th>Prezzo</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <div class="totale-box" id="totaleCarrello">Totale: €0.00</div>
+
+        <div class="actions">
+            <a href="index.html" class="btn btn-back">Continua lo Shopping</a>
+            <button onclick="svuotaCarrello()" class="btn btn-clear">Svuota Carrello</button>
+            <button onclick="stampaPdfOrdine()" class="btn btn-pdf">Perfeziona e Stampa PDF 📄</button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', renderCarrello);
+
+        function renderCarrello() {
+            const carrello = JSON.parse(localStorage.getItem('carrelloSpesa')) || [];
+            const tbody = document.querySelector('#carrelloTabella tbody');
+            const totaleBox = document.getElementById('totaleCarrello');
+            tbody.innerHTML = '';
+            
+            if(carrello.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center;">Il tuo carrello è vuoto.</td></tr>';
+                totaleBox.textContent = "Totale: €0.00";
+                return;
+            }
+
+            let totale = 0;
+            carrello.forEach(prod => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `<td>${prod.marca}</td><td>${prod.modello}</td><td>€${prod.prezzo}</td>`;
+                tbody.appendChild(tr);
+                totale += parseFloat(prod.prezzo || 0);
+            });
+
+            totaleBox.textContent = `Totale: €${totale.toFixed(2)}`;
+        }
+
+        function svuotaCarrello() {
+            localStorage.removeItem('carrelloSpesa');
+            renderCarrello();
+        }
+
+        function stampaPdfOrdine() {
+            const carrello = JSON.parse(localStorage.getItem('carrelloSpesa')) || [];
+            if(carrello.length === 0) {
+                alert("Il carrello è vuoto, impossibile generare l'ordine.");
+                return;
+            }
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Layout Testata PDF
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(22);
+            doc.text("RIEPILOGO ORDINE D'ACQUISTO", 14, 20);
+            
+            doc.setFontSize(10);
+            doc.setFont("helvetica", "normal");
+            doc.text(`Data: ${new Date().toLocaleDateString()}`, 14, 28);
+            doc.text("Piattaforma Universale Client-Side", 14, 33);
+            doc.line(14, 37, 196, 37); // Linea divisoria
+
+            // Tabella Prodotti nel PDF
+            let y = 48;
+            doc.setFont("helvetica", "bold");
+            doc.text("Articolo", 14, 43);
+            doc.text("Prezzo", 170, 43);
+            doc.setFont("helvetica", "normal");
+
+            let totale = 0;
+            carrello.forEach(prod => {
+                if (y > 270) { doc.addPage(); y = 20; } // Gestione multi-pagina automatica
+                doc.text(`${prod.marca} - ${prod.modello}`, 14, y);
+                doc.text(`Euro ${prod.prezzo}`, 170, y);
+                totale += parseFloat(prod.prezzo || 0);
+                y += 10;
+            });
+
+            doc.line(14, y, 196, y);
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(14);
+            doc.text(`TOTALE COMPLESSIVO: Euro ${totale.toFixed(2)}`, 110, y + 12);
+
+            // Download istantaneo del documento generato
+            doc.save(`ordine_acquisto_${Date.now()}.pdf`);
+        }
+    </script>
+</body>
+</html>
