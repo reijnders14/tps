@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carrello</title>
+<link id="fontLink" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0f; --surface: #16161a; --surface2: #1e1e24;
+    --border: #2a2a35; --accent: #7b61ff; --accent-dim: rgba(123,97,255,0.15);
+    --text: #e8e8f0; --muted: #6b6b80; --success: #4ade80; --danger: #ff6b6b;
+    --sans: 'Syne', sans-serif; --mono: 'DM Mono', monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; }
+
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(13,13,15,0.9); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px; height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .nav-logo { width: 36px; height: 36px; background: var(--accent); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .nav-name { font-size: 17px; font-weight: 800; color: var(--text); }
+  .back-link { display: flex; align-items: center; gap: 8px; color: var(--muted); font-family: var(--mono); font-size: 13px; text-decoration: none; transition: color 0.2s; }
+  .back-link:hover { color: var(--accent); }
+
+  .page-wrapper { max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; }
+  .page-header { margin-bottom: 40px; }
+  .page-eyebrow { font-family: var(--mono); font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+  h1 { font-size: clamp(28px, 4vw, 42px); font-weight: 800; letter-spacing: -1px; }
+
+  .cart-layout { display: grid; grid-template-columns: 1fr 360px; gap: 32px; align-items: start; }
+
+  /* CART ITEMS */
+  .cart-items { display: flex; flex-direction: column; gap: 16px; }
+
+  .empty-cart {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 80px 24px; text-align: center;
+  }
+  .empty-cart .big { font-size: 48px; margin-bottom: 16px; }
+  .empty-cart p { color: var(--muted); font-family: var(--mono); margin-bottom: 24px; }
+  .empty-cart a {
+    background: var(--accent); color: white; padding: 12px 24px; border-radius: 8px;
+    text-decoration: none; font-weight: 700; font-size: 15px;
+  }
+
+  .cart-item {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 16px; display: flex; gap: 16px; align-items: center;
+    transition: border-color 0.2s;
+    animation: fadeUp 0.3s both;
+  }
+  @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+  .cart-item:hover { border-color: var(--border); }
+
+  .ci-img { width: 80px; height: 60px; border-radius: 8px; overflow: hidden; flex-shrink: 0; background: var(--surface2); }
+  .ci-img img { width: 100%; height: 100%; object-fit: cover; }
+
+  .ci-info { flex: 1; min-width: 0; }
+  .ci-brand { font-family: var(--mono); font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); margin-bottom: 2px; }
+  .ci-model { font-size: 15px; font-weight: 700; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .ci-unit { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+
+  .ci-controls { display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+  .qty-ctrl { display: flex; align-items: center; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+  .qty-btn { width: 32px; height: 32px; background: transparent; border: none; color: var(--text); font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
+  .qty-btn:hover { background: var(--accent-dim); }
+  .qty-num { width: 36px; text-align: center; font-family: var(--mono); font-size: 14px; border-left: 1px solid var(--border); border-right: 1px solid var(--border); padding: 6px 0; }
+
+  .ci-price { font-size: 18px; font-weight: 800; width: 100px; text-align: right; flex-shrink: 0; }
+
+  .ci-remove { background: transparent; border: none; color: var(--muted); cursor: pointer; font-size: 18px; padding: 4px; border-radius: 4px; transition: color 0.15s; }
+  .ci-remove:hover { color: var(--danger); }
+
+  /* SUMMARY */
+  .cart-summary {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
+    padding: 24px; position: sticky; top: 80px;
+  }
+  .summary-title { font-size: 18px; font-weight: 700; margin-bottom: 20px; }
+  .summary-line { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border); font-family: var(--mono); font-size: 13px; }
+  .summary-line:last-of-type { border-bottom: none; }
+  .summary-line .label { color: var(--muted); }
+  .summary-total { display: flex; justify-content: space-between; padding-top: 16px; margin-top: 8px; border-top: 2px solid var(--border); }
+  .summary-total .label { font-size: 16px; font-weight: 700; }
+  .summary-total .val { font-size: 26px; font-weight: 800; letter-spacing: -1px; }
+
+  /* CUSTOMER FORM */
+  .customer-form { margin-top: 24px; }
+  .form-title { font-family: var(--mono); font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-bottom: 16px; }
+  label { display: block; font-family: var(--mono); font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; margin-top: 12px; }
+  label:first-of-type { margin-top: 0; }
+  input[type="text"], input[type="email"], input[type="tel"] {
+    width: 100%; background: var(--bg); border: 1px solid var(--border);
+    color: var(--text); font-family: var(--mono); font-size: 13px;
+    padding: 10px 14px; border-radius: 6px; outline: none; transition: border-color 0.2s;
+  }
+  input:focus { border-color: var(--accent); }
+
+  .btn-checkout {
+    width: 100%; margin-top: 20px; background: var(--accent); color: white;
+    border: none; border-radius: 10px; padding: 16px;
+    font-family: var(--sans); font-size: 16px; font-weight: 700;
+    cursor: pointer; transition: all 0.2s; display: flex; align-items: center;
+    justify-content: center; gap: 8px;
+  }
+  .btn-checkout:hover { background: #6a52e0; transform: translateY(-1px); }
+  .btn-checkout:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  .btn-clear {
+    width: 100%; margin-top: 10px; background: transparent;
+    border: 1px solid var(--border); color: var(--muted); border-radius: 8px;
+    padding: 10px; font-family: var(--mono); font-size: 12px; cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-clear:hover { border-color: var(--danger); color: var(--danger); }
+
+  /* PDF PREVIEW MODAL */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 300;
+    display: none; align-items: center; justify-content: center; padding: 24px;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+    width: 100%; max-width: 720px; max-height: 90vh; overflow-y: auto;
+    animation: fadeUp 0.3s both;
+  }
+  .modal-head {
+    padding: 20px 24px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .modal-head h2 { font-size: 18px; font-weight: 700; }
+  .modal-close { background: transparent; border: none; color: var(--muted); font-size: 22px; cursor: pointer; }
+  .modal-body { padding: 24px; }
+
+  .pdf-preview {
+    background: white; color: #1a1a1a; border-radius: 8px;
+    padding: 40px; font-family: 'DM Mono', monospace; font-size: 12px;
+    line-height: 1.6;
+  }
+  .pdf-header { display: flex; justify-content: space-between; margin-bottom: 32px; padding-bottom: 20px; border-bottom: 2px solid #e0e0e0; }
+  .pdf-company { }
+  .pdf-company .name { font-size: 20px; font-weight: 700; font-family: 'Syne', sans-serif; margin-bottom: 4px; color: var(--accent); }
+  .pdf-order-num { text-align: right; }
+  .pdf-order-num .num { font-size: 18px; font-weight: 700; }
+  .pdf-section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: #888; margin-bottom: 8px; }
+  .pdf-customer { background: #f8f8f8; border-radius: 6px; padding: 16px; margin-bottom: 24px; }
+  .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
+  .pdf-table th { background: #f0f0f0; padding: 8px 12px; text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #666; }
+  .pdf-table td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; }
+  .pdf-table tr:last-child td { border-bottom: none; }
+  .pdf-totals { border-top: 2px solid #e0e0e0; padding-top: 16px; }
+  .pdf-total-row { display: flex; justify-content: space-between; padding: 4px 0; }
+  .pdf-total-row.grand { font-size: 16px; font-weight: 700; border-top: 1px solid #ddd; margin-top: 8px; padding-top: 8px; }
+  .pdf-footer-note { margin-top: 32px; padding-top: 16px; border-top: 1px solid #e0e0e0; font-size: 10px; color: #999; }
+
+  .modal-actions { display: flex; gap: 12px; padding: 20px 24px; border-top: 1px solid var(--border); }
+  .modal-btn {
+    flex: 1; padding: 14px; border-radius: 8px; font-family: var(--sans);
+    font-size: 14px; font-weight: 700; cursor: pointer; border: none; transition: all 0.2s;
+  }
+  .modal-btn-primary { background: var(--accent); color: white; }
+  .modal-btn-primary:hover { background: #6a52e0; }
+  .modal-btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--text); }
+  .modal-btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 24px; right: 24px; z-index: 400; background: var(--success); color: #0a2010; padding: 12px 20px; border-radius: 8px; font-size: 14px; font-weight: 700; transform: translateY(80px); opacity: 0; transition: all 0.3s; pointer-events: none; }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  @media (max-width: 768px) {
+    .cart-layout { grid-template-columns: 1fr; }
+    .cart-summary { position: static; }
+    .ci-controls { flex-direction: column; align-items: flex-end; gap: 8px; }
+    .ci-img { width: 60px; height: 45px; }
+    nav { padding: 0 12px; }
+    .page-wrapper { padding: 24px 16px 60px; }
+    .pdf-header { flex-direction: column; gap: 16px; }
+    .pdf-order-num { text-align: left; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="index.html">
+    <div class="nav-logo" id="navLogo">🛍</div>
+    <div class="nav-name" id="navName">Catalogo</div>
+  </a>
+  <a class="back-link" href="index.html">← Continua lo shopping</a>
+</nav>
+
+<div class="page-wrapper">
+  <div class="page-header">
+    <div class="page-eyebrow">🛒 carrello</div>
+    <h1>Il tuo carrello</h1>
+  </div>
+
+  <div class="cart-layout">
+    <div class="cart-items" id="cartItems"></div>
+
+    <div class="cart-summary">
+      <div class="summary-title">Riepilogo ordine</div>
+      <div id="summaryLines"></div>
+      <div class="summary-total">
+        <span class="label">Totale</span>
+        <span class="val" id="grandTotal">—</span>
+      </div>
+      <div class="customer-form">
+        <div class="form-title">// Dati di spedizione</div>
+        <label>Nome e Cognome *</label>
+        <input type="text" id="custName" placeholder="Mario Rossi">
+        <label>Email *</label>
+        <input type="email" id="custEmail" placeholder="mario@email.it">
+        <label>Telefono</label>
+        <input type="tel" id="custPhone" placeholder="+39 333 000 0000">
+        <label>Indirizzo di spedizione *</label>
+        <input type="text" id="custAddress" placeholder="Via Roma 1, 20100 Milano">
+        <label>Note aggiuntive</label>
+        <input type="text" id="custNotes" placeholder="Citofono, orario di consegna…">
+      </div>
+      <button class="btn-checkout" id="checkoutBtn" onclick="openPdfPreview()">
+        📄 Genera ordine PDF
+      </button>
+      <button class="btn-clear" onclick="clearCart()">🗑 Svuota carrello</button>
+    </div>
+  </div>
+</div>
+
+<!-- PDF MODAL -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal-head">
+      <h2>Anteprima ordine PDF</h2>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="pdf-preview" id="pdfPreview"></div>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-btn modal-btn-ghost" onclick="closeModal()">Modifica</button>
+      <button class="modal-btn modal-btn-primary" onclick="printPDF()">🖨 Stampa / Salva PDF</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+let cfg = {};
+let cart = [];
+
+function applyTheme(c) {
+  if (!c.themeColors) return;
+  const r = document.documentElement.style; const t = c.themeColors;
+  if (t.bg) r.setProperty('--bg', t.bg);
+  if (t.surface) r.setProperty('--surface', t.surface);
+  if (t.text) r.setProperty('--text', t.text);
+  if (t.muted) r.setProperty('--muted', t.muted);
+  if (c.accentColor) { r.setProperty('--accent', c.accentColor); r.setProperty('--accent-dim', c.accentColor + '26'); }
+  if (c.fontFamily) {
+    r.setProperty('--sans', `'${c.fontFamily}', sans-serif`);
+    document.getElementById('fontLink').href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(c.fontFamily)}:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap`;
+  }
+}
+
+function init() {
+  const raw = localStorage.getItem('shopConfig');
+  cfg = raw ? JSON.parse(raw) : {};
+  applyTheme(cfg);
+  document.getElementById('navName').textContent = cfg.shopName || 'Catalogo';
+  document.title = 'Carrello — ' + (cfg.shopName || 'Catalogo');
+  cart = JSON.parse(localStorage.getItem('cart') || '[]');
+  renderCart();
+}
+
+function renderCart() {
+  const container = document.getElementById('cartItems');
+  const cur = cfg.currency || '€';
+
+  if (!cart.length) {
+    container.innerHTML = `<div class="empty-cart">
+      <div class="big">🛒</div>
+      <p>Il tuo carrello è vuoto</p>
+      <a href="index.html">← Vai al catalogo</a>
+    </div>`;
+    document.getElementById('summaryLines').innerHTML = '';
+    document.getElementById('grandTotal').textContent = '—';
+    document.getElementById('checkoutBtn').disabled = true;
+    return;
+  }
+
+  document.getElementById('checkoutBtn').disabled = false;
+
+  container.innerHTML = cart.map((item, i) => `
+    <div class="cart-item" style="animation-delay:${i*0.06}s">
+      <div class="ci-img"><img src="${item.img || ''}" alt="${item.model}" onerror="this.src='https://via.placeholder.com/80x60/1e1e24/7b61ff?text=${encodeURIComponent(item.brand||'')}'" loading="lazy"></div>
+      <div class="ci-info">
+        <div class="ci-brand">${item.brand || ''}</div>
+        <div class="ci-model">${item.model || ''}</div>
+        <div class="ci-unit">${cur}${parseFloat(item.price).toFixed(2)} / pz</div>
+      </div>
+      <div class="ci-controls">
+        <div class="qty-ctrl">
+          <button class="qty-btn" onclick="changeQty(${i},-1)">−</button>
+          <div class="qty-num">${item.qty}</div>
+          <button class="qty-btn" onclick="changeQty(${i},1)">+</button>
+        </div>
+        <div class="ci-price">${cur}${(item.price * item.qty).toFixed(2)}</div>
+        <button class="ci-remove" onclick="removeItem(${i})" title="Rimuovi">✕</button>
+      </div>
+    </div>`
+  ).join('');
+
+  // Summary
+  const subtotal = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const shipping = subtotal > 500 ? 0 : 9.90;
+  const total = subtotal + shipping;
+
+  document.getElementById('summaryLines').innerHTML = `
+    <div class="summary-line"><span class="label">Subtotale (${cart.reduce((s,i)=>s+i.qty,0)} articoli)</span><span>${cur}${subtotal.toFixed(2)}</span></div>
+    <div class="summary-line"><span class="label">Spedizione</span><span>${shipping === 0 ? '🎉 Gratuita' : cur + shipping.toFixed(2)}</span></div>
+    <div class="summary-line"><span class="label">IVA inclusa</span><span>—</span></div>
+  `;
+  document.getElementById('grandTotal').textContent = `${cur}${total.toFixed(2)}`;
+}
+
+function changeQty(idx, delta) {
+  cart[idx].qty = Math.max(1, cart[idx].qty + delta);
+  localStorage.setItem('cart', JSON.stringify(cart));
+  renderCart();
+}
+
+function removeItem(idx) {
+  cart.splice(idx, 1);
+  localStorage.setItem('cart', JSON.stringify(cart));
+  renderCart();
+  showToast('Prodotto rimosso dal carrello');
+}
+
+function clearCart() {
+  if (!confirm('Svuotare il carrello?')) return;
+  cart = []; localStorage.setItem('cart', JSON.stringify(cart));
+  renderCart();
+}
+
+function openPdfPreview() {
+  const name = document.getElementById('custName').value.trim();
+  const email = document.getElementById('custEmail').value.trim();
+  const address = document.getElementById('custAddress').value.trim();
+  if (!name || !email || !address) {
+    showToast('⚠ Compila nome, email e indirizzo!');
+    return;
+  }
+  buildPdfPreview();
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+function buildPdfPreview() {
+  const cur = cfg.currency || '€';
+  const co = cfg.companyName || 'Il tuo negozio';
+  const addr = cfg.companyAddress || '';
+  const vat = cfg.companyVat || '';
+  const em = cfg.companyEmail || '';
+  const footer = cfg.pdfFooter || '';
+  const custName = document.getElementById('custName').value;
+  const custEmail = document.getElementById('custEmail').value;
+  const custPhone = document.getElementById('custPhone').value;
+  const custAddress = document.getElementById('custAddress').value;
+  const custNotes = document.getElementById('custNotes').value;
+
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('it-IT', {day:'2-digit',month:'long',year:'numeric'});
+  const orderNum = 'ORD-' + now.getFullYear() + String(now.getMonth()+1).padStart(2,'0') + String(now.getDate()).padStart(2,'0') + '-' + Math.floor(Math.random()*9000+1000);
+
+  const subtotal = cart.reduce((s,i) => s + i.price * i.qty, 0);
+  const shipping = subtotal > 500 ? 0 : 9.90;
+  const total = subtotal + shipping;
+
+  const rows = cart.map(item => `
+    <tr>
+      <td>${item.brand || ''} ${item.model || ''}</td>
+      <td style="text-align:center">${item.qty}</td>
+      <td style="text-align:right">${cur}${parseFloat(item.price).toFixed(2)}</td>
+      <td style="text-align:right"><strong>${cur}${(item.price * item.qty).toFixed(2)}</strong></td>
+    </tr>`).join('');
+
+  document.getElementById('pdfPreview').innerHTML = `
+    <div class="pdf-header">
+      <div class="pdf-company">
+        <div class="name">${co}</div>
+        <div>${addr}</div>
+        <div>P.IVA: ${vat}</div>
+        <div>${em}</div>
+      </div>
+      <div class="pdf-order-num">
+        <div class="pdf-section-title">Numero ordine</div>
+        <div class="num">${orderNum}</div>
+        <div style="margin-top:8px;color:#888;">${dateStr}</div>
+      </div>
+    </div>
+
+    <div class="pdf-section-title">Dati cliente</div>
+    <div class="pdf-customer">
+      <strong>${custName}</strong><br>
+      ${custEmail}${custPhone ? ' · ' + custPhone : ''}<br>
+      ${custAddress}
+      ${custNotes ? '<br><em>Note: ' + custNotes + '</em>' : ''}
+    </div>
+
+    <div class="pdf-section-title">Articoli ordinati</div>
+    <table class="pdf-table">
+      <thead><tr>
+        <th>Prodotto</th><th style="text-align:center">Qtà</th>
+        <th style="text-align:right">Prezzo unit.</th><th style="text-align:right">Totale</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+    </table>
+
+    <div class="pdf-totals">
+      <div class="pdf-total-row"><span>Subtotale</span><span>${cur}${subtotal.toFixed(2)}</span></div>
+      <div class="pdf-total-row"><span>Spedizione</span><span>${shipping === 0 ? 'Gratuita' : cur + shipping.toFixed(2)}</span></div>
+      <div class="pdf-total-row grand"><span>TOTALE ORDINE</span><span style="color:${cfg.accentColor||'#7b61ff'}">${cur}${total.toFixed(2)}</span></div>
+    </div>
+
+    <div class="pdf-footer-note">${footer}</div>
+  `;
+}
+
+function printPDF() {
+  const preview = document.getElementById('pdfPreview').innerHTML;
+  const win = window.open('', '_blank');
+  win.document.write(`<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Ordine — ${cfg.shopName || 'Catalogo'}</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin:0; padding:0; }
+  body { font-family: 'DM Mono', monospace; font-size: 12px; color: #1a1a1a; padding: 40px; background: white; line-height: 1.6; }
+  .pdf-header { display: flex; justify-content: space-between; margin-bottom: 32px; padding-bottom: 20px; border-bottom: 2px solid #e0e0e0; }
+  .name { font-size: 22px; font-weight: 800; font-family: 'Syne', sans-serif; margin-bottom: 4px; color: ${cfg.accentColor || '#7b61ff'}; }
+  .pdf-order-num .num { font-size: 18px; font-weight: 700; }
+  .pdf-section-title { font-size: 10px; text-transform: uppercase; letter-spacing: 2px; color: #888; margin-bottom: 8px; }
+  .pdf-customer { background: #f8f8f8; border-radius: 6px; padding: 16px; margin-bottom: 24px; }
+  .pdf-table { width: 100%; border-collapse: collapse; margin-bottom: 24px; }
+  .pdf-table th { background: #f0f0f0; padding: 8px 12px; text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: #666; }
+  .pdf-table td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; }
+  .pdf-table tr:last-child td { border-bottom: none; }
+  .pdf-totals { border-top: 2px solid #e0e0e0; padding-top: 16px; }
+  .pdf-total-row { display: flex; justify-content: space-between; padding: 4px 0; }
+  .pdf-total-row.grand { font-size: 16px; font-weight: 700; border-top: 1px solid #ddd; margin-top: 8px; padding-top: 8px; }
+  .pdf-footer-note { margin-top: 32px; padding-top: 16px; border-top: 1px solid #e0e0e0; font-size: 10px; color: #999; }
+  @media print { body { padding: 20px; } }
+</style>
+</head>
+<body>${preview}</body>
+</html>`);
+  win.document.close();
+  setTimeout(() => { win.focus(); win.print(); }, 500);
+
+  // Clear cart after order
+  setTimeout(() => {
+    cart = []; localStorage.setItem('cart', JSON.stringify(cart));
+    closeModal(); renderCart();
+    showToast('✓ Ordine completato! Carrello svuotato.');
+  }, 800);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+// Close modal on overlay click
+document.getElementById('modalOverlay').addEventListener('click', e => {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+});
+
+init();
+</script>
+</body>
+</html>
