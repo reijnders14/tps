@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catalogo</title>
+<link id="fontLink" href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0d0f;
+    --surface: #16161a;
+    --surface2: #1e1e24;
+    --border: #2a2a35;
+    --accent: #7b61ff;
+    --accent-dim: rgba(123,97,255,0.15);
+    --text: #e8e8f0;
+    --muted: #6b6b80;
+    --card-shadow: 0 4px 24px rgba(0,0,0,0.4);
+    --sans: 'Syne', sans-serif;
+    --mono: 'DM Mono', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: var(--sans); min-height: 100vh;
+  }
+
+  /* NAV */
+  nav {
+    position: sticky; top: 0; z-index: 100;
+    background: rgba(13,13,15,0.85); backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 24px; height: 64px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 16px;
+  }
+
+  .nav-brand {
+    display: flex; align-items: center; gap: 10px; text-decoration: none;
+  }
+
+  .nav-logo {
+    width: 36px; height: 36px; background: var(--accent);
+    border-radius: 8px; display: flex; align-items: center; justify-content: center;
+    font-size: 18px; flex-shrink: 0;
+  }
+
+  .nav-name {
+    font-size: 17px; font-weight: 800; color: var(--text); letter-spacing: -0.5px;
+  }
+  .nav-cat {
+    font-family: var(--mono); font-size: 10px; color: var(--muted); letter-spacing: 1px; text-transform: uppercase;
+  }
+
+  .nav-actions { display: flex; align-items: center; gap: 12px; }
+
+  .search-wrap {
+    position: relative; display: flex; align-items: center;
+  }
+  .search-wrap input {
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text); font-family: var(--mono); font-size: 13px;
+    padding: 8px 16px 8px 36px; border-radius: 6px; outline: none;
+    width: 220px; transition: all 0.2s;
+  }
+  .search-wrap input:focus { border-color: var(--accent); width: 280px; }
+  .search-wrap .icon { position: absolute; left: 12px; color: var(--muted); font-size: 14px; }
+
+  .cart-btn {
+    position: relative; background: var(--surface); border: 1px solid var(--border);
+    color: var(--text); padding: 8px 16px; border-radius: 6px; cursor: pointer;
+    font-family: var(--sans); font-size: 14px; font-weight: 600;
+    display: flex; align-items: center; gap: 8px; text-decoration: none;
+    transition: all 0.2s;
+  }
+  .cart-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .cart-count {
+    position: absolute; top: -8px; right: -8px;
+    background: var(--accent); color: white; font-size: 11px; font-weight: 700;
+    width: 20px; height: 20px; border-radius: 50%; display: flex;
+    align-items: center; justify-content: center;
+    display: none;
+  }
+
+  .config-btn {
+    background: transparent; border: 1px solid var(--border);
+    color: var(--muted); padding: 8px 12px; border-radius: 6px;
+    cursor: pointer; font-size: 16px; transition: all 0.2s; text-decoration: none;
+  }
+  .config-btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* HERO */
+  .hero {
+    padding: 64px 24px 48px; text-align: center; position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(ellipse at 50% 0%, rgba(123,97,255,0.2) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .hero-eyebrow {
+    font-family: var(--mono); font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--accent); margin-bottom: 16px;
+  }
+  .hero h2 { font-size: clamp(32px, 5vw, 56px); font-weight: 800; letter-spacing: -2px; line-height: 1; }
+  .hero-sub { margin-top: 12px; color: var(--muted); font-family: var(--mono); font-size: 14px; }
+
+  /* FILTERS */
+  .filters {
+    padding: 0 24px 24px; display: flex; align-items: center; justify-content: space-between;
+    gap: 16px; flex-wrap: wrap;
+  }
+  .filter-tags { display: flex; gap: 8px; flex-wrap: wrap; }
+  .filter-tag {
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--muted); font-family: var(--mono); font-size: 11px;
+    padding: 6px 14px; border-radius: 20px; cursor: pointer; transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .filter-tag.active { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+
+  .sort-select {
+    background: var(--surface); border: 1px solid var(--border);
+    color: var(--text); font-family: var(--mono); font-size: 12px;
+    padding: 8px 12px; border-radius: 6px; outline: none; cursor: pointer;
+  }
+
+  .results-count { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+
+  /* GRID */
+  .catalog {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px; padding: 0 24px 80px;
+  }
+
+  .catalog.list-view { grid-template-columns: 1fr; }
+
+  /* PRODUCT CARD */
+  .p-card {
+    background: var(--surface); border: 1px solid var(--border);
+    border-radius: 12px; overflow: hidden; cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    display: flex; flex-direction: column;
+    animation: fadeUp 0.4s both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .p-card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: var(--card-shadow); }
+
+  .p-img-wrap {
+    position: relative; aspect-ratio: 4/3; overflow: hidden; background: var(--surface2);
+  }
+  .p-img-wrap img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 0.4s;
+  }
+  .p-card:hover .p-img-wrap img { transform: scale(1.05); }
+
+  .p-badge {
+    position: absolute; top: 10px; left: 10px;
+    background: var(--accent); color: white; font-family: var(--mono);
+    font-size: 10px; font-weight: 500; padding: 4px 10px; border-radius: 3px;
+    letter-spacing: 1px; text-transform: uppercase;
+  }
+
+  .p-body { padding: 18px; flex: 1; display: flex; flex-direction: column; }
+  .p-brand { font-family: var(--mono); font-size: 11px; color: var(--accent); letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+  .p-model { font-size: 17px; font-weight: 700; letter-spacing: -0.5px; margin-bottom: 8px; }
+  .p-desc { font-size: 13px; color: var(--muted); line-height: 1.5; flex: 1;
+    display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+
+  .p-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 16px; }
+  .p-price { font-size: 22px; font-weight: 800; letter-spacing: -1px; }
+  .p-price span { font-family: var(--mono); font-size: 13px; color: var(--muted); font-weight: 300; margin-left: 2px; }
+
+  .p-cta {
+    background: var(--accent-dim); color: var(--accent); border: 1px solid transparent;
+    font-family: var(--sans); font-size: 13px; font-weight: 700;
+    padding: 8px 16px; border-radius: 6px; cursor: pointer; transition: all 0.15s;
+  }
+  .p-cta:hover { background: var(--accent); color: white; }
+
+  /* LIST VIEW OVERRIDES */
+  .list-view .p-card { flex-direction: row; align-items: stretch; }
+  .list-view .p-img-wrap { width: 180px; min-width: 180px; aspect-ratio: unset; height: 140px; }
+  .list-view .p-body { padding: 16px; }
+  .list-view .p-desc { -webkit-line-clamp: 1; }
+
+  /* EMPTY */
+  .empty { grid-column: 1/-1; text-align: center; padding: 80px 24px; color: var(--muted); }
+  .empty .big { font-size: 48px; margin-bottom: 12px; }
+  .empty p { font-family: var(--mono); }
+
+  /* TOAST */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px; z-index: 200;
+    background: var(--accent); color: white; padding: 12px 20px;
+    border-radius: 8px; font-size: 14px; font-weight: 600;
+    transform: translateY(80px); opacity: 0; transition: all 0.3s;
+    pointer-events: none;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+
+  /* LOADING */
+  .loading { grid-column: 1/-1; padding: 80px; text-align: center; }
+  .spinner {
+    width: 32px; height: 32px; border: 2px solid var(--border);
+    border-top-color: var(--accent); border-radius: 50%;
+    animation: spin 0.8s linear infinite; margin: 0 auto 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  @media (max-width: 600px) {
+    .search-wrap input { width: 150px; }
+    .search-wrap input:focus { width: 160px; }
+    nav { padding: 0 12px; }
+    .catalog { padding: 0 12px 60px; gap: 12px; }
+    .filters { padding: 0 12px 16px; }
+    .hero { padding: 40px 16px 32px; }
+    .list-view .p-card { flex-direction: column; }
+    .list-view .p-img-wrap { width: 100%; height: auto; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="index.html">
+    <div class="nav-logo" id="navLogo">🛍</div>
+    <div>
+      <div class="nav-name" id="navName">Catalogo</div>
+      <div class="nav-cat" id="navCat">prodotti</div>
+    </div>
+  </a>
+  <div class="nav-actions">
+    <div class="search-wrap">
+      <span class="icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="Cerca prodotto..." oninput="filterProducts()">
+    </div>
+    <a class="cart-btn" href="cart.html">
+      🛒 Carrello
+      <span class="cart-count" id="cartCount"></span>
+    </a>
+    <a class="config-btn" href="ini.html" title="Configurazione">⚙</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="hero-eyebrow" id="heroEyebrow">catalogo</div>
+  <h2 id="heroTitle">I nostri prodotti</h2>
+  <p class="hero-sub" id="heroSub">Scopri la nostra selezione</p>
+</div>
+
+<div class="filters">
+  <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+    <div class="filter-tags" id="brandFilters"></div>
+    <span class="results-count" id="resultsCount"></span>
+  </div>
+  <div style="display:flex;align-items:center;gap:8px;">
+    <select class="sort-select" onchange="sortProducts(this.value)">
+      <option value="default">Ordine predefinito</option>
+      <option value="price-asc">Prezzo ↑</option>
+      <option value="price-desc">Prezzo ↓</option>
+      <option value="name-asc">Nome A→Z</option>
+    </select>
+    <button class="config-btn" onclick="toggleView()" id="viewToggle" title="Cambia vista">⊞</button>
+  </div>
+</div>
+
+<div class="catalog" id="catalog">
+  <div class="loading">
+    <div class="spinner"></div>
+    <div style="font-family:var(--mono);font-size:13px;color:var(--muted);">Caricamento prodotti…</div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const DEFAULT_CSV = `marca,modello,descrizione,immagine,prezzo
+Apple,MacBook Pro 16",Laptop professionale con chip M3 Pro, display Liquid Retina XDR 16 pollici, 18GB RAM, 512GB SSD. Autonomia fino a 22 ore. Ideale per professionisti creativi e sviluppatori.,https://images.unsplash.com/photo-1517336714731-489689fd1ca8?w=600,2499.00
+Apple,iPhone 15 Pro,Smartphone flagship con chip A17 Pro, sistema a tripla fotocamera con zoom ottico 5x, titanio di grado aerospaziale, Dynamic Island e USB-C. Display Super Retina XDR 6.1 pollici.,https://images.unsplash.com/photo-1695048133142-1a20484d2569?w=600,1299.00
+Samsung,Galaxy S24 Ultra,Smartphone Android top di gamma con S Pen integrata, fotocamera da 200MP, display Dynamic AMOLED 2X 6.8 pollici, chip Snapdragon 8 Gen 3, 12GB RAM e 256GB storage.,https://images.unsplash.com/photo-1610945415295-d9bbf067e59c?w=600,1399.00
+Sony,WH-1000XM5,Cuffie over-ear wireless con cancellazione del rumore leader del settore, 30 ore di autonomia, ricarica rapida, audio Hi-Res certificato e microfono array per chiamate cristalline.,https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=600,349.00
+Dell,XPS 15,Laptop premium con display OLED 15.6 pollici 3.5K touch, Intel Core i7-13700H, 16GB RAM, RTX 4060, chassis in alluminio e fibra di carbonio. Perfetto per creativi e professionisti.,https://images.unsplash.com/photo-1593642632559-0c6d3fc62b89?w=600,1799.00
+Bose,QuietComfort 45,Cuffie wireless premium con cancellazione attiva del rumore, suono Bose bilanciato e naturale, 24 ore di autonomia, cuscinetti in memory foam e archetto regolabile ultraleggero.,https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600,279.00
+Apple,iPad Pro 12.9",Tablet professionale con chip M2, display Liquid Retina XDR mini-LED, connettività 5G, compatibile con Apple Pencil 2 e Magic Keyboard. Lo strumento definitivo per la creatività mobile.,https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=600,1099.00
+Logitech,MX Master 3S,Mouse wireless ergonomico con sensore da 8000 DPI silenzioso, scroll MagSpeed elettromagnetico, connessione multi-dispositivo Bolt e Bluetooth, ricarica USB-C e autonomia da 70 giorni.,https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=600,99.00`;
+
+let cfg = {};
+let allProducts = [];
+let filteredProducts = [];
+let activeBrand = 'all';
+let currentSort = 'default';
+let isListView = false;
+
+function parseCSV(text) {
+  const lines = text.trim().split('\n');
+  const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+  const products = [];
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i];
+    if (!line.trim()) continue;
+    // Handle quoted fields
+    const values = [];
+    let cur = '', inQ = false;
+    for (let c of line) {
+      if (c === '"') { inQ = !inQ; }
+      else if (c === ',' && !inQ) { values.push(cur.trim()); cur = ''; }
+      else cur += c;
+    }
+    values.push(cur.trim());
+    const obj = {};
+    headers.forEach((h, idx) => obj[h] = values[idx] || '');
+    products.push(obj);
+  }
+  return products;
+}
+
+function applyTheme(c) {
+  if (!c.themeColors) return;
+  const r = document.documentElement.style;
+  const t = c.themeColors;
+  if (t.bg) r.setProperty('--bg', t.bg);
+  if (t.surface) r.setProperty('--surface', t.surface);
+  if (t.text) r.setProperty('--text', t.text);
+  if (t.muted) r.setProperty('--muted', t.muted);
+  if (c.accentColor) {
+    r.setProperty('--accent', c.accentColor);
+    r.setProperty('--accent-dim', c.accentColor + '26');
+  }
+  if (c.fontFamily) {
+    r.setProperty('--sans', `'${c.fontFamily}', sans-serif`);
+    document.getElementById('fontLink').href =
+      `https://fonts.googleapis.com/css2?family=${encodeURIComponent(c.fontFamily)}:wght@400;600;700;800&family=DM+Mono:wght@300;400;500&display=swap`;
+  }
+}
+
+function init() {
+  const raw = localStorage.getItem('shopConfig');
+  cfg = raw ? JSON.parse(raw) : {};
+
+  applyTheme(cfg);
+
+  document.getElementById('navName').textContent = cfg.shopName || 'Catalogo';
+  document.getElementById('navCat').textContent = cfg.shopCategory || 'prodotti';
+  document.getElementById('heroTitle').textContent = cfg.shopName || 'I nostri prodotti';
+  document.getElementById('heroEyebrow').textContent = cfg.shopCategory || 'catalogo';
+  document.getElementById('heroSub').textContent = cfg.shopTagline || 'Scopri la nostra selezione';
+  document.title = (cfg.shopName || 'Catalogo') + ' — Prodotti';
+
+  updateCartCount();
+
+  let csvText = cfg.csvData;
+  if (!csvText || csvText === '__USE_DEFAULT__') csvText = DEFAULT_CSV;
+  allProducts = parseCSV(csvText);
+  filteredProducts = [...allProducts];
+
+  buildBrandFilters();
+  renderCatalog();
+}
+
+function buildBrandFilters() {
+  const brandCol = cfg.colBrand || 'marca';
+  const brands = [...new Set(allProducts.map(p => p[brandCol] || p.marca || '').filter(Boolean))];
+  const container = document.getElementById('brandFilters');
+  container.innerHTML = `<button class="filter-tag active" onclick="filterBrand('all',this)">Tutti</button>`;
+  brands.forEach(b => {
+    container.innerHTML += `<button class="filter-tag" onclick="filterBrand('${b}',this)">${b}</button>`;
+  });
+}
+
+function filterBrand(brand, btn) {
+  activeBrand = brand;
+  document.querySelectorAll('.filter-tag').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  filterProducts();
+}
+
+function filterProducts() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  const brandCol = cfg.colBrand || 'marca';
+  const modelCol = cfg.colModel || 'modello';
+
+  filteredProducts = allProducts.filter(p => {
+    const brand = p[brandCol] || p.marca || '';
+    const model = p[modelCol] || p.modello || '';
+    const desc = p.descrizione || '';
+    const matchBrand = activeBrand === 'all' || brand.toLowerCase() === activeBrand.toLowerCase();
+    const matchSearch = !q || brand.toLowerCase().includes(q) || model.toLowerCase().includes(q) || desc.toLowerCase().includes(q);
+    return matchBrand && matchSearch;
+  });
+
+  sortProducts(currentSort, false);
+  renderCatalog();
+}
+
+function sortProducts(val, rerender = true) {
+  currentSort = val;
+  const brandCol = cfg.colBrand || 'marca';
+  const modelCol = cfg.colModel || 'modello';
+  if (val === 'price-asc') filteredProducts.sort((a, b) => parseFloat(a.prezzo) - parseFloat(b.prezzo));
+  else if (val === 'price-desc') filteredProducts.sort((a, b) => parseFloat(b.prezzo) - parseFloat(a.prezzo));
+  else if (val === 'name-asc') filteredProducts.sort((a, b) => (a[brandCol] || '').localeCompare(b[brandCol] || ''));
+  if (rerender) renderCatalog();
+}
+
+function renderCatalog() {
+  const cur = cfg.currency || '€';
+  const brandCol = cfg.colBrand || 'marca';
+  const modelCol = cfg.colModel || 'modello';
+  const catalog = document.getElementById('catalog');
+  document.getElementById('resultsCount').textContent = `${filteredProducts.length} prodotti`;
+
+  if (!filteredProducts.length) {
+    catalog.innerHTML = `<div class="empty"><div class="big">🔍</div><p>Nessun prodotto trovato</p></div>`;
+    return;
+  }
+
+  catalog.innerHTML = filteredProducts.map((p, i) => {
+    const brand = p[brandCol] || p.marca || '';
+    const model = p[modelCol] || p.modello || '';
+    const desc = p.descrizione || '';
+    const img = p.immagine || `https://via.placeholder.com/400x300/1e1e24/7b61ff?text=${encodeURIComponent(brand)}`;
+    const price = parseFloat(p.prezzo || 0).toFixed(2);
+    const idx = allProducts.indexOf(p);
+
+    return `<div class="p-card" onclick="goProduct(${idx})" style="animation-delay:${i*0.05}s">
+      <div class="p-img-wrap">
+        <img src="${img}" alt="${model}" loading="lazy" onerror="this.src='https://via.placeholder.com/400x300/1e1e24/7b61ff?text=${encodeURIComponent(brand)}'">
+        <div class="p-badge">${brand}</div>
+      </div>
+      <div class="p-body">
+        <div class="p-brand">${brand}</div>
+        <div class="p-model">${model}</div>
+        <div class="p-desc">${desc}</div>
+        <div class="p-footer">
+          <div class="p-price">${cur}${price}<span></span></div>
+          <button class="p-cta" onclick="addToCart(event,${idx})">+ Carrello</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function goProduct(idx) {
+  localStorage.setItem('currentProduct', idx);
+  window.location.href = 'product.html';
+}
+
+function addToCart(e, idx) {
+  e.stopPropagation();
+  const brandCol = cfg.colBrand || 'marca';
+  const modelCol = cfg.colModel || 'modello';
+  const p = allProducts[idx];
+  let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+  const existing = cart.find(item => item.idx === idx);
+  if (existing) existing.qty++;
+  else cart.push({ idx, brand: p[brandCol] || p.marca, model: p[modelCol] || p.modello, price: parseFloat(p.prezzo), img: p.immagine, qty: 1 });
+  localStorage.setItem('cart', JSON.stringify(cart));
+  updateCartCount();
+  showToast(`✓ ${p[modelCol] || p.modello} aggiunto al carrello`);
+}
+
+function updateCartCount() {
+  const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+  const total = cart.reduce((s, i) => s + i.qty, 0);
+  const el = document.getElementById('cartCount');
+  if (total > 0) { el.style.display = 'flex'; el.textContent = total; }
+  else el.style.display = 'none';
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2500);
+}
+
+function toggleView() {
+  isListView = !isListView;
+  const catalog = document.getElementById('catalog');
+  const btn = document.getElementById('viewToggle');
+  catalog.classList.toggle('list-view', isListView);
+  btn.textContent = isListView ? '⊟' : '⊞';
+}
+
+init();
+</script>
+</body>
+</html>
