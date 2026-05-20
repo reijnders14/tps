@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scheda Prodotto</title>
+    <style>
+        :root { --primary-color: #333; --accent-color: #007bff; }
+        body { font-family: sans-serif; background: #f8f9fa; margin: 0; padding: 20px; }
+        .container { max-width: 900px; margin: 40px auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); display: flex; gap: 40px; flex-wrap: wrap; }
+        .col-img { flex: 1; min-width: 300px; }
+        .col-img img { width: 100%; max-height: 450px; object-fit: cover; border-radius: 6px; }
+        .col-info { flex: 1; min-width: 300px; display: flex; flex-direction: column; justify-content: space-between; }
+        .marca { text-transform: uppercase; color: #888; letter-spacing: 1px; font-weight: bold; }
+        h1 { margin: 10px 0; color: var(--primary-color); }
+        .prezzo { font-size: 2rem; font-weight: bold; color: var(--accent-color); margin: 20px 0; }
+        .descrizione { line-height: 1.6; color: #555; margin-bottom: 30px; }
+        .btn-add { background: #28a745; color: white; border: none; padding: 15px 25px; border-radius: 4px; font-size: 1.1rem; cursor: pointer; width: 100%; font-weight: bold; }
+        .btn-add:hover { background: #218838; }
+        .back-link { display: inline-block; margin-bottom: 20px; color: var(--accent-color); text-decoration: none; }
+    </style>
+    <script>
+        const customCss = localStorage.getItem('customCss');
+        if (customCss) {
+            const style = document.createElement('style');
+            style.textContent = customCss;
+            document.head.appendChild(style);
+        }
+    </script>
+</head>
+<body>
+    <div style="max-width: 900px; margin: 0 auto;">
+        <a href="index.html" class="back-link">← Torna al catalogo</a>
+    </div>
+
+    <div class="container" id="productContainer"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const prodId = params.get('id');
+            const catalogo = JSON.parse(localStorage.getItem('catalogoProdotti')) || [];
+            const container = document.getElementById('productContainer');
+
+            if (!prodId || !catalogo[prodId]) {
+                container.innerHTML = "<p>Prodotto non trovato.</p>";
+                return;
+            }
+
+            const prod = catalogo[prodId];
+
+            container.innerHTML = `
+                <div class="col-img">
+                    <img src="${prod.immagine || 'https://via.placeholder.com/400'}" alt="${prod.modello}">
+                </div>
+                <div class="col-info">
+                    <div>
+                        <span class="marca">${prod.marca}</span>
+                        <h1>${prod.modello}</h1>
+                        <div class="prezzo">€${prod.prezzo}</div>
+                        <p class="descrizione">${prod.descrizione}</p>
+                    </div>
+                    <button class="btn-add" onclick="aggiungiAlCarrello(${prodId})">Aggiungi al Carrello 🛒</button>
+                </div>
+            `;
+        });
+
+        function aggiungiAlCarrello(id) {
+            const catalogo = JSON.parse(localStorage.getItem('catalogoProdotti'));
+            let carrello = JSON.parse(localStorage.getItem('carrelloSpesa')) || [];
+            
+            carrello.push(catalogo[id]);
+            localStorage.setItem('carrelloSpesa', JSON.stringify(carrello));
+            
+            alert("Prodotto aggiunto al carrello con successo!");
+        }
+    </script>
+</body>
+</html>
