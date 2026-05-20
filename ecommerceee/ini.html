@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurazione Piattaforma</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f4f9; color: #333; padding: 20px; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { color: #007bff; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input[type="file"], textarea { width: 100%; padding: 10px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; }
+        textarea { height: 150px; font-family: monospace; }
+        button { background: #007bff; color: white; border: none; padding: 12px 20px; cursor: pointer; border-radius: 4px; font-size: 16px; width: 100%; }
+        button:hover { background: #0056b3; }
+        .status { margin-top: 15px; padding: 10px; display: none; border-radius: 4px; }
+        .success { background: #d4edda; color: #155724; display: block; }
+    </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Configurazione Store</h1>
+        <p>Carica il catalogo prodotti (.csv) e personalizza lo stile grafico.</p>
+        
+        <div class="form-group">
+            <label for="csvFileInput">Seleziona File CSV del Catalogo:</label>
+            <input type="file" id="csvFileInput" accept=".csv">
+        </div>
+
+        <div class="form-group">
+            <label for="customCssInput">CSS di Personalizzazione (Opzionale):</label>
+            <textarea id="customCssInput" placeholder=":root { --primary-color: #ff5722; } ..."></textarea>
+        </div>
+
+        <button onclick="configuraPiattaforma()">Salva e Inizializza Piattaforma</button>
+        <div id="statusMessage" class="status"></div>
+    </div>
+
+    <script>
+        function configuraPiattaforma() {
+            const fileInput = document.getElementById('csvFileInput').files[0];
+            const customCss = document.getElementById('customCssInput').value;
+            const statusMessage = document.getElementById('statusMessage');
+
+            if (!fileInput) {
+                alert("Per favore, seleziona un file CSV prima di salvare.");
+                return;
+            }
+
+            Papa.parse(fileInput, {
+                header: true,
+                skipEmptyLines: true,
+                complete: function(results) {
+                    // Salva i dati strutturati e il CSS nel localStorage
+                    localStorage.setItem('catalogoProdotti', JSON.stringify(results.data));
+                    localStorage.setItem('customCss', customCss);
+                    localStorage.removeItem('carrelloSpesa'); // Svuota il vecchio carrello all'aggiornamento catalogo
+
+                    statusMessage.textContent = "Configurazione salvata con successo! Catalogo di " + results.data.length + " prodotti pronto.";
+                    statusMessage.className = "status success";
+                },
+                error: function(error) {
+                    alert("Errore nel caricamento del file CSV: " + error.message);
+                }
+            });
+        }
+    </script>
+</body>
+</html>
