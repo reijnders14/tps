@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tabella Covid Automatici</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h2>Dati Covid</h2>
+    <table id="miaTabella"></table>
+
+    <script>
+        var richiesta = new XMLHttpRequest();
+        richiesta.open("GET", "https://raw.githubusercontent.com/pcm-dpc/COVID-19/master/dati-json/dpc-covid19-ita-andamento-nazionale.json", false);
+        richiesta.send();
+
+        var dati = JSON.parse(richiesta.responseText);
+
+        var tabella = document.getElementById("miaTabella");
+
+        var chiavi = Object.keys(dati[0]);
+
+        var rigaHeader = document.createElement("tr");
+        for (var k = 0; k < chiavi.length; k = k + 1) {
+            var th = document.createElement("th");
+            th.innerHTML = chiavi[k];
+            rigaHeader.appendChild(th);
+        }
+        tabella.appendChild(rigaHeader);
+
+        for (var i = 0; i < dati.length; i = i + 1) {
+            var riga = document.createElement("tr");
+
+            for (var j = 0; j < chiavi.length; j = j + 1) {
+                var td = document.createElement("td");
+                var nomeColonna = chiavi[j];
+                td.innerHTML = dati[i][nomeColonna];
+                riga.appendChild(td);
+            }
+
+            tabella.appendChild(riga);
+        }
+    </script>
+
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+CSS:
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 2rem;
+  color: #202124;
+  background: #f5f7fa;
+}
+
+h1, h2 { color: #174a72; }
+.tabella-contenitore { overflow-x: auto; margin-bottom: 2rem; }
+table { border-collapse: collapse; width: 100%; background: white; }
+th, td { border: 1px solid #cbd5df; padding: 0.55rem; text-align: left; }
+th { background: #e4eef6; }
+tr:nth-child(even) { background: #f7fafc; }
+#stato { color: #555; }
