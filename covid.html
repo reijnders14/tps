@@ -2,7 +2,109 @@
 <html>
 <head>
     <title>Tabella Covid Automatici</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        
+/* Sfondo della pagina */
+body {
+    margin: 0;
+    padding: 30px;
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #171923;
+    color: #e2e8f0;
+}
+
+/* Titolo */
+h2 {
+    text-align: center;
+    color: #4ade80;
+    font-size: 34px;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+/* Tabella */
+#miaTabella {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background-color: #222633;
+    border: 1px solid #353b4d;
+    border-radius: 12px;
+    overflow: hidden;
+    font-size: 13px;
+}
+
+/* Intestazioni */
+#miaTabella th {
+    background-color: #16a34a;
+    color: white;
+    padding: 16px 12px;
+    text-align: left;
+    font-weight: bold;
+    white-space: nowrap;
+}
+
+/* Celle */
+#miaTabella td {
+    padding: 13px 12px;
+    border-bottom: 1px solid #353b4d;
+    color: #cbd5e1;
+    white-space: nowrap;
+}
+
+/* Righe alternate */
+#miaTabella tr:nth-child(even) {
+    background-color: #292f3e;
+}
+
+#miaTabella tr:nth-child(odd) {
+    background-color: #222633;
+}
+
+/* Effetto mouse */
+#miaTabella tr:hover td {
+    background-color: #374151;
+    color: #4ade80;
+    transition: 0.2s;
+}
+
+/* Prima riga arrotondata */
+#miaTabella tr:first-child th:first-child {
+    border-top-left-radius: 10px;
+}
+
+#miaTabella tr:first-child th:last-child {
+    border-top-right-radius: 10px;
+}
+
+/* Ultima riga */
+#miaTabella tr:last-child td {
+    border-bottom: none;
+}
+
+/* Smartphone e tablet */
+@media (max-width: 768px) {
+    body {
+        padding: 12px;
+    }
+
+    h2 {
+        font-size: 24px;
+        letter-spacing: 1px;
+    }
+
+    #miaTabella {
+        font-size: 11px;
+    }
+
+    #miaTabella th,
+    #miaTabella td {
+        padding: 9px 8px;
+    }
+}
+
+    </style>
 </head>
 <body>
 
